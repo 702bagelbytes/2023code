@@ -22,7 +22,7 @@ public final class Constants {
         public static final int TALON_FR_ID = 35;
         public static final int TALON_BL_ID = 36;
         public static final int TALON_BR_ID = 33;
-        public static final double DRIVE_SPEED = 0.5;
+        public static final double DRIVE_SPEED = 1.0;
     }
 
     public class ControllerConstants {
