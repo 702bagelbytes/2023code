@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.BalanceCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -21,11 +25,12 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final XboxController driverController = new XboxController(
+  private final CommandXboxController driverController = new CommandXboxController(
       ControllerConstants.DRIVER_PORT);
-  private final XboxController coDriverController = new XboxController(
+  private final CommandXboxController coDriverController = new CommandXboxController(
       ControllerConstants.CODRIVER_PORT);
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final AHRS ahrs = new AHRS();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -39,6 +44,12 @@ public class RobotContainer {
         driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () -> -driverController.getRightY()));
   }
 
+  public Command balanceCommand() {
+    // "taking off" should translate to a positive angle being returned
+    // DANGER: this must be re-checked whenever navx is repositioned!
+    return new BalanceCommand(driveSubsystem, () -> -ahrs.getRoll());
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
@@ -49,6 +60,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Driver
+    driverController.a().whileTrue(balanceCommand());
 
     // Co-Driver
   }

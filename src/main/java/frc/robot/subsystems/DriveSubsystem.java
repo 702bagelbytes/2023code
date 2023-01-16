@@ -25,6 +25,10 @@ public class DriveSubsystem extends SubsystemBase {
         rightGroup.setInverted(true);
     }
 
+    public void tankDrive(double leftSpeed, double rightSpeed) {
+        drive.tankDrive(leftSpeed, rightSpeed);
+    }
+
     public Command tankDriveCmd(Supplier<Double> leftSpeedSupplier, Supplier<Double> rightSpeedSupplier) {
         return this.runEnd(
                 () -> drive.tankDrive(leftSpeedSupplier.get() * DriveConstants.DRIVE_SPEED,
