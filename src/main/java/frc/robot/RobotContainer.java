@@ -4,12 +4,11 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.BalanceCommand;
+import frc.robot.subsystems.AHRSSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,7 +29,7 @@ public class RobotContainer {
   private final CommandXboxController coDriverController = new CommandXboxController(
       ControllerConstants.CODRIVER_PORT);
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final AHRS ahrs = new AHRS();
+  private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -45,9 +44,13 @@ public class RobotContainer {
   }
 
   public Command balanceCommand() {
-    // "taking off" should translate to a positive angle being returned
+    // "taking off" should translate to a positive angle being returned from the
+    // supplier
     // DANGER: this must be re-checked whenever navx is repositioned!
-    return new BalanceCommand(driveSubsystem, () -> -ahrs.getRoll());
+
+    // purposely not adding a requirement on the ahrsSubsystem because exclusive
+    // access is not needed
+    return new BalanceCommand(driveSubsystem, () -> -ahrsSubsystem.getRoll());
   }
 
   /**

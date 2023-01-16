@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -24,7 +21,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private AHRS ahrs = new AHRS();
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -60,9 +56,6 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("Yaw", ahrs.getYaw());
-    SmartDashboard.putNumber("Pitch", ahrs.getPitch());
-    SmartDashboard.putNumber("Roll", ahrs.getRoll());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
