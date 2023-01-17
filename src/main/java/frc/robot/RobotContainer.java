@@ -6,11 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.subsystems.AHRSSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
@@ -43,14 +45,17 @@ public class RobotContainer {
         driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () -> -driverController.getRightY()));
   }
 
-  public Command balanceCommand() {
+  public float getBalanceAngle() {
     // "taking off" should translate to a positive angle being returned from the
     // supplier
     // DANGER: this must be re-checked whenever navx is repositioned!
+    return -ahrsSubsystem.getRoll();
+  }
 
+  public Command balanceCommand(double setpoint) {
     // purposely not adding a requirement on the ahrsSubsystem because exclusive
     // access is not needed
-    return new BalanceCommand(driveSubsystem, () -> -ahrsSubsystem.getRoll());
+    return new BalanceCommand(driveSubsystem, this::getBalanceAngle, setpoint);
   }
 
   /**
@@ -63,7 +68,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Driver
-    driverController.a().whileTrue(balanceCommand());
+    driverController.a().whileTrue(balanceCommand(getBalanceAngle()));
 
     // Co-Driver
   }
@@ -74,6 +79,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    SmartDashboard.putNumber("Auto Speed", 0);
+    float initialAngle = getBalanceAngle();
+    return driveSubsystem.tankDriveCmd(() -> 0.5, () -> 0.5).withTimeout(1.75)
+        .andThen(new WaitCommand(1.0))
+        .andThen(balanceCommand(initialAngle));
   }
 }
