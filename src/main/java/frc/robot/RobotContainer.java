@@ -12,6 +12,7 @@ import frc.robot.commands.BalanceCommand;
 import frc.robot.subsystems.AHRSSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -69,6 +70,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Driver
     driverController.a().whileTrue(balanceCommand(getBalanceAngle()));
+    driverController.b().onTrue(new InstantCommand(driveSubsystem::resetEncoders));
 
     // Co-Driver
   }
@@ -81,7 +83,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     SmartDashboard.putNumber("Auto Speed", 0);
     float initialAngle = getBalanceAngle();
-    return driveSubsystem.tankDriveCmd(() -> 0.5, () -> 0.5).withTimeout(1.75)
+    return driveSubsystem.tankDriveCmd(() -> 0.5, () -> 0.5).withTimeout(2)
         .andThen(new WaitCommand(1.0))
         .andThen(balanceCommand(initialAngle));
   }
