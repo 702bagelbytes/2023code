@@ -2,10 +2,12 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -31,7 +33,17 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
 
     public DriveSubsystem() {
+        sparkML.setInverted(true);
+        sparkFR.setInverted(true);
         rightGroup.setInverted(true);
+
+        talonFL.setNeutralMode(NeutralMode.Brake);
+        sparkML.setIdleMode(IdleMode.kBrake);
+        talonBL.setNeutralMode(NeutralMode.Brake);
+        sparkFR.setIdleMode(IdleMode.kBrake);
+        talonMR.setNeutralMode(NeutralMode.Brake);
+        talonBR.setNeutralMode(NeutralMode.Brake);
+
         leftEncoder.setInverted(DriveConstants.LEFT_ENCODER_INVERTED);
         rightEncoder.setInverted(DriveConstants.RIGHT_ENCODER_INVERTED);
     }
