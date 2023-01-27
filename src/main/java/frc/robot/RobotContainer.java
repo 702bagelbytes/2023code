@@ -4,12 +4,21 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.ArmInCommand;
+import frc.robot.commands.ArmOutCommand;
+import frc.robot.commands.ArmUpDownCommand;
 import frc.robot.commands.BalanceCommand;
+import frc.robot.commands.EncoderDriveCommand;
+import frc.robot.commands.TurretSpinCommand;
 import frc.robot.subsystems.AHRSSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ArmXYSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,6 +42,8 @@ public class RobotContainer {
       ControllerConstants.CODRIVER_PORT);
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
+  private final ArmXYSubsystem armXYSubsystem = new ArmXYSubsystem();
+  private final ArmSubsystem armSubsystem = new ArmSubsystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -69,10 +80,16 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Driver
-    driverController.a().whileTrue(balanceCommand(getBalanceAngle()));
+    // driverController.a().whileTrue(balanceCommand(getBalanceAngle()));
+    driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
     driverController.b().onTrue(new InstantCommand(driveSubsystem::resetEncoders));
 
     // Co-Driver
+
+    coDriverController.a().whileTrue(new TurretSpinCommand(new WPI_TalonFX(1), new SlewRateLimiter(.5, -.5, .25)));
+    coDriverController.povDown().whileTrue(new ArmInCommand(armSubsystem));
+    coDriverController.povUp().whileTrue(new ArmOutCommand(armSubsystem));
+    armXYSubsystem.setDefaultCommand(new ArmUpDownCommand(armXYSubsystem, () -> coDriverController.getLeftY()));
   }
 
   /**

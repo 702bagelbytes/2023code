@@ -10,11 +10,13 @@ import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -46,16 +48,33 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftEncoder.setInverted(DriveConstants.LEFT_ENCODER_INVERTED);
         rightEncoder.setInverted(DriveConstants.RIGHT_ENCODER_INVERTED);
+
+        drive.setMaxOutput(DriveConstants.DRIVE_SPEED);
+    }
+
+    public double clampSpeed(double speed) {
+        speed = MathUtil.clamp(speed, -1.0, 1.0);
+        if (speed <= 0.05) {
+            return 0;
+        }
+        double minSpeed = 0.2;
+        return Math.copySign(minSpeed, speed) + (1 - minSpeed) * speed;
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
+        SmartDashboard.putNumber("Raw Left Speed", leftSpeed);
+        SmartDashboard.putNumber("Raw Right Speed", rightSpeed);
+        leftSpeed = clampSpeed(leftSpeed);
+        rightSpeed = clampSpeed(rightSpeed);
+        SmartDashboard.putNumber("Left Speed", leftSpeed);
+        SmartDashboard.putNumber("Right Speed", rightSpeed);
         drive.tankDrive(leftSpeed, rightSpeed);
     }
 
     public Command tankDriveCmd(Supplier<Double> leftSpeedSupplier, Supplier<Double> rightSpeedSupplier) {
         return this.runEnd(
-                () -> drive.tankDrive(leftSpeedSupplier.get() * DriveConstants.DRIVE_SPEED,
-                        rightSpeedSupplier.get() * DriveConstants.DRIVE_SPEED),
+                () -> drive.tankDrive(leftSpeedSupplier.get(),
+                        rightSpeedSupplier.get()),
                 () -> drive.tankDrive(0, 0));
     }
 
@@ -63,6 +82,14 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Left Encoder", leftEncoder.getPosition());
         SmartDashboard.putNumber("Right Encoder", rightEncoder.getPosition());
+    }
+
+    public double getLeftEncoderValue() {
+        return leftEncoder.getPosition();
+    }
+
+    public double getRightEncoderValue() {
+        return rightEncoder.getPosition();
     }
 
     public void resetEncoders() {

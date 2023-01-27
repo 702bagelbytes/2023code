@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -23,10 +21,13 @@ public final class Constants {
         public static final int TALON_FL_ID = 30;
         public static final int SPARK_ML_ID = 3;
         public static final int TALON_BL_ID = 29;
-
+        public static final int ARM_ID = 33;
+        public static final int ARMUPDOWN_ID = 36;
         public static final int SPARK_FR_ID = 1;
         public static final int TALON_MR_ID = 22;
         public static final int TALON_BR_ID = 21;
+        public static final double ARM_SPEED = 0.5;
+        public static final double ARMUPDOWN_SPEED = 0.2;
 
         public static final boolean LEFT_ENCODER_INVERTED = false;
         public static final boolean RIGHT_ENCODER_INVERTED = true;
