@@ -50,19 +50,6 @@ public class RobotContainer {
         driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () -> -driverController.getRightY()));
   }
 
-  public float getBalanceAngle() {
-    // "taking off" should translate to a positive angle being returned from the
-    // supplier
-    // DANGER: this must be re-checked whenever navx is repositioned!
-    return -ahrsSubsystem.getRoll();
-  }
-
-  public Command balanceCommand(double setpoint) {
-    // purposely not adding a requirement on the ahrsSubsystem because exclusive
-    // access is not needed
-    return new BalanceCommand(driveSubsystem, this::getBalanceAngle, setpoint);
-  }
-
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
@@ -89,9 +76,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     SmartDashboard.putNumber("Auto Speed", 0);
-    float initialAngle = getBalanceAngle();
+    float initialAngle = ahrsSubsystem.getBalanceAngle();
     return driveSubsystem.tankDriveCmd(() -> 0.5, () -> 0.5).withTimeout(2)
         .andThen(new WaitCommand(1.0))
-        .andThen(balanceCommand(initialAngle));
+        .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle, initialAngle));
   }
 }

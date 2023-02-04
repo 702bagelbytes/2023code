@@ -15,6 +15,11 @@ public class AHRSSubsystem extends SubsystemBase {
         return ahrs.getRoll();
     }
 
+    public float getBalanceAngle() {
+        // "taking off" should translate to a positive angle being returned from the
+        return -getRoll();
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Yaw", ahrs.getYaw());
