@@ -20,31 +20,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
-    private final WPI_TalonSRX talonFL = new WPI_TalonSRX(DriveConstants.TALON_FL_ID);
-    private final CANSparkMax sparkML = new CANSparkMax(DriveConstants.SPARK_ML_ID, MotorType.kBrushed);
-    private final RelativeEncoder leftEncoder = sparkML.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
-    private final WPI_TalonSRX talonBL = new WPI_TalonSRX(DriveConstants.TALON_BL_ID);
-    private final MotorControllerGroup leftGroup = new MotorControllerGroup(talonFL, sparkML, talonBL);
+    private final WPI_TalonSRX talonL1 = new WPI_TalonSRX(16);
+    private final WPI_TalonSRX talonL2 = new WPI_TalonSRX(27);
+    private final CANSparkMax sparkL = new CANSparkMax(4, MotorType.kBrushed);
+    private final RelativeEncoder leftEncoder = sparkL.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
+    private final MotorControllerGroup leftGroup = new MotorControllerGroup(talonL1, talonL2, sparkL);
 
-    private final CANSparkMax sparkFR = new CANSparkMax(DriveConstants.SPARK_FR_ID, MotorType.kBrushed);
-    private final RelativeEncoder rightEncoder = sparkFR.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
-    private final WPI_TalonSRX talonMR = new WPI_TalonSRX(DriveConstants.TALON_MR_ID);
-    private final WPI_TalonSRX talonBR = new WPI_TalonSRX(DriveConstants.TALON_BR_ID);
-    private final MotorControllerGroup rightGroup = new MotorControllerGroup(sparkFR, talonMR, talonBR);
+    private final WPI_TalonSRX talonR1 = new WPI_TalonSRX(23);
+    private final WPI_TalonSRX talonR2 = new WPI_TalonSRX(28);
+    private final CANSparkMax sparkR = new CANSparkMax(3, MotorType.kBrushed);
+    private final RelativeEncoder rightEncoder = sparkR.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
+    private final MotorControllerGroup rightGroup = new MotorControllerGroup(talonR1, talonR2, sparkR);
 
     private final DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
 
     public DriveSubsystem() {
-        sparkML.setInverted(true);
-        sparkFR.setInverted(true);
+        sparkL.setInverted(true);
+        sparkR.setInverted(true);
         rightGroup.setInverted(true);
 
-        talonFL.setNeutralMode(NeutralMode.Brake);
-        sparkML.setIdleMode(IdleMode.kBrake);
-        talonBL.setNeutralMode(NeutralMode.Brake);
-        sparkFR.setIdleMode(IdleMode.kBrake);
-        talonMR.setNeutralMode(NeutralMode.Brake);
-        talonBR.setNeutralMode(NeutralMode.Brake);
+        talonL1.setNeutralMode(NeutralMode.Brake);
+        talonL2.setNeutralMode(NeutralMode.Brake);
+        sparkL.setIdleMode(IdleMode.kBrake);
+        talonR1.setNeutralMode(NeutralMode.Brake);
+        talonR2.setNeutralMode(NeutralMode.Brake);
+        sparkR.setIdleMode(IdleMode.kBrake);
 
         leftEncoder.setInverted(DriveConstants.LEFT_ENCODER_INVERTED);
         rightEncoder.setInverted(DriveConstants.RIGHT_ENCODER_INVERTED);
@@ -64,8 +64,8 @@ public class DriveSubsystem extends SubsystemBase {
     public void tankDrive(double leftSpeed, double rightSpeed) {
         SmartDashboard.putNumber("Raw Left Speed", leftSpeed);
         SmartDashboard.putNumber("Raw Right Speed", rightSpeed);
-        leftSpeed = clampSpeed(leftSpeed);
-        rightSpeed = clampSpeed(rightSpeed);
+        // leftSpeed = clampSpeed(leftSpeed);
+        // rightSpeed = clampSpeed(rightSpeed);
         SmartDashboard.putNumber("Left Speed", leftSpeed);
         SmartDashboard.putNumber("Right Speed", rightSpeed);
         drive.tankDrive(leftSpeed, rightSpeed);
