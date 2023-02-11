@@ -4,17 +4,15 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
-import frc.robot.commands.TurretSpinCommand;
 import frc.robot.subsystems.AHRSSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -30,13 +28,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final CommandXboxController driverController = new CommandXboxController(
-      ControllerConstants.DRIVER_PORT);
-  private final CommandXboxController coDriverController = new CommandXboxController(
-      ControllerConstants.CODRIVER_PORT);
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
+  private final TurretSubsystem turretSubsystem = new TurretSubsystem();
+
+  private final CommandXboxController driverController = new CommandXboxController(
+      OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController coDriverController = new CommandXboxController(
+      OperatorConstants.kCoDriverControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -44,10 +43,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-
-    // Configure driving command
-    driveSubsystem.setDefaultCommand(
-        driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () -> -driverController.getRightY()));
   }
 
   /**
@@ -60,13 +55,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Driver
-    // driverController.a().whileTrue(balanceCommand(getBalanceAngle()));
+    driveSubsystem.setDefaultCommand(
+        driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () -> -driverController.getRightY()));
     driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
     driverController.b().onTrue(new InstantCommand(driveSubsystem::resetEncoders));
 
     // Co-Driver
-
-    coDriverController.a().whileTrue(new TurretSpinCommand(new WPI_TalonFX(1), new SlewRateLimiter(.5, -.5, .25)));
+    turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightY()));
   }
 
   /**

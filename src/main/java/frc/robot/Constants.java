@@ -17,15 +17,44 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public class DriveConstants {
-        public static final boolean LEFT_ENCODER_INVERTED = false;
-        public static final boolean RIGHT_ENCODER_INVERTED = true;
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+    public static final int kCoDriverControllerPort = 1;
+  }
 
-        public static final double DRIVE_SPEED = 1.0;
-    }
+  public static class DriveConstants {
+    public static final int SPARK_FL_ID = 1;
+    public static final int TALON_ML_ID = 27;
+    public static final int TALON_BL_ID = 4;
+    public static final int ARM_ID = 33;
+    public static final int ARMUPDOWN_ID = 36;
+    public static final int SPARK_FR_ID = 3;
+    public static final int TALON_MR_ID = 16;
+    public static final int TALON_BR_ID = 35;
 
-    public class ControllerConstants {
-        public static final int DRIVER_PORT = 0;
-        public static final int CODRIVER_PORT = 1;
-    }
+    public static final boolean LEFT_ENCODER_INVERTED = false;
+    public static final boolean RIGHT_ENCODER_INVERTED = true;
+
+    public static final double DRIVE_SPEED = 0.5;
+  }
+
+  public static class TurretConstants {
+    public static final int kTurretTalonFX = 1;
+    public static final double kMaxOutput = 0.5;
+  }
+
+  public static class TelescopeConstants {
+    public static final int kExtensionTalonFX = 5;
+  }
+
+  public static class ArmConstants {
+    public static final int kRaiseSpark = 11;
+
+  }
+
+  public static class GRABOTRONConstants {
+    public static final int kRevPneumaticsHubId = 1;
+    public static final int kExtendSolenoid = 0;
+    public static final int kRetractSolenoid = 1;
+  }
 }
