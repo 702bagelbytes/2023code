@@ -37,7 +37,8 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem() {
         sparkFL.setInverted(true);
         sparkFR.setInverted(true);
-        rightGroup.setInverted(true);
+        leftGroup.setInverted(true);
+        rightGroup.setInverted(false);
 
         sparkFL.setIdleMode(IdleMode.kBrake);
         talonML.setNeutralMode(NeutralMode.Brake);

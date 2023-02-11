@@ -32,8 +32,8 @@ public final class Constants {
     public static final int TALON_MR_ID = 16;
     public static final int TALON_BR_ID = 35;
 
-    public static final boolean LEFT_ENCODER_INVERTED = false;
-    public static final boolean RIGHT_ENCODER_INVERTED = true;
+    public static final boolean LEFT_ENCODER_INVERTED = true;
+    public static final boolean RIGHT_ENCODER_INVERTED = false;
 
     public static final double DRIVE_SPEED = 0.5;
   }
