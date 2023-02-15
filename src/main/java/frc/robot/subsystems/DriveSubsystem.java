@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
-
+import java.lang.Math;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -25,8 +25,9 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+
+import static frc.robot.Constants.inchToMeter;
 
 public class DriveSubsystem extends SubsystemBase {
     private final CANSparkMax sparkFL = new CANSparkMax(DriveConstants.SPARK_FL_ID, MotorType.kBrushed);
@@ -67,13 +68,13 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getRightDistance() {
-        double wheelRadiusMeter = Constants.DriveConstants.WHEEL_RADIUS_INCH * Constants.DriveConstants.INCH_TO_METER;
+        double wheelRadiusMeter = inchToMeter(DriveConstants.WHEEL_RADIUS_INCH);
         double circumference = 2 * wheelRadiusMeter * Math.PI;
         return rightEncoder.getPosition() * circumference;
     }
 
     public double getLeftDistance() {
-        double wheelRadiusMeter = Constants.DriveConstants.WHEEL_RADIUS_INCH * Constants.DriveConstants.INCH_TO_METER;
+        double wheelRadiusMeter = inchToMeter(DriveConstants.WHEEL_RADIUS_INCH);
         double circumference = 2 * wheelRadiusMeter * Math.PI;
         return leftEncoder.getPosition() * circumference;
     }

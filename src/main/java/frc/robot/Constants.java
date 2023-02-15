@@ -22,6 +22,10 @@ public final class Constants {
     public static final int kCoDriverControllerPort = 1;
   }
 
+  public static double inchToMeter(double inches) {
+    return inches * .0254;
+  }
+
   public static class DriveConstants {
     public static final int SPARK_FL_ID = 1;
     public static final int TALON_ML_ID = 27;
