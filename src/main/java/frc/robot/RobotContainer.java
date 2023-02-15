@@ -55,8 +55,12 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Driver
-    driveSubsystem.setDefaultCommand(
-        driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () -> -driverController.getRightY()));
+    // driveSubsystem.setDefaultCommand(
+    // driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () ->
+    // -driverController.getRightY()));
+    driveSubsystem
+        .setDefaultCommand(
+            driveSubsystem.arcadeDriveCmd(() -> -driverController.getLeftY(), () -> -driverController.getRightX()));
     driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
     driverController.b().onTrue(new InstantCommand(driveSubsystem::resetEncoders));
 
@@ -72,7 +76,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     SmartDashboard.putNumber("Auto Speed", 0);
     float initialAngle = ahrsSubsystem.getBalanceAngle();
-    return driveSubsystem.tankDriveCmd(() -> 0.5, () -> 0.5).withTimeout(2)
+    return driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
         .andThen(new WaitCommand(1.0))
         .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle, initialAngle));
   }
