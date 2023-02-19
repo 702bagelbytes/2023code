@@ -55,6 +55,7 @@ public final class Constants {
   public static class ArmConstants {
     public static final int kRaiseTalon = 4;
 
+    public static final double kMaxArmOutput = 0.5;
   }
 
   public static class GRABOTRONConstants {

@@ -25,6 +25,7 @@ public class ArmSubsystem extends SubsystemBase {
         // 1 / cpr / gear ratio
         encoder.setDistancePerPulse(1 / 1024.0 / 48.0);
         // rateLimiter.reset(0);
+
     }
 
     public void set(double value) {
@@ -32,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
         // rateLimiter.reset(0);
         // }
         // var valSend = value == 0 ? value : rateLimiter.calculate(value);
-        kRaiseTalon.set(value);
+        kRaiseTalon.set(value * Constants.ArmConstants.kMaxArmOutput);
         // SmartDashboard.putNumber("ArmValSend", valSend);
     }
 

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
-    private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TelescopeConstants.kExtensionTalonFX);
+    private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TurretConstants.kTurretTalonFX);
     // // private final Encoder encoder = new Encoder(0, 0);
 
     public TurretSubsystem() {

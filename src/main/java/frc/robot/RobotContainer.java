@@ -74,9 +74,8 @@ public class RobotContainer {
                 armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
                 coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
-                coDriverController.leftTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
-                // turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() ->
-                // coDriverController.getRightY()));
+                coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
+                turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
         }
 
         /**
