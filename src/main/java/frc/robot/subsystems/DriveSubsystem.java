@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+// import frc.robot.Constants.*;
 
 import static frc.robot.Constants.inchToMeter;
 
@@ -61,8 +62,8 @@ public class DriveSubsystem extends SubsystemBase {
         talonMR.setNeutralMode(NeutralMode.Brake);
         talonBR.setNeutralMode(NeutralMode.Brake);
 
-        leftEncoder.setInverted(DriveConstants.LEFT_ENCODER_INVERTED);
-        rightEncoder.setInverted(DriveConstants.RIGHT_ENCODER_INVERTED);
+        // leftEncoder.setInverted(DriveConstants.LEFT_ENCODER_INVERTED);
+        // rightEncoder.setInverted(DriveConstants.RIGHT_ENCODER_INVERTED);
 
         drive.setMaxOutput(DriveConstants.DRIVE_SPEED);
     }

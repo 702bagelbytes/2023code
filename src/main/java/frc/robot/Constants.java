@@ -30,8 +30,6 @@ public final class Constants {
     public static final int SPARK_FL_ID = 1;
     public static final int TALON_ML_ID = 27;
     public static final int TALON_BL_ID = 4;
-    public static final int ARM_ID = 33;
-    public static final int ARMUPDOWN_ID = 36;
     public static final int SPARK_FR_ID = 3;
     public static final int TALON_MR_ID = 16;
     public static final int TALON_BR_ID = 35;
@@ -50,11 +48,12 @@ public final class Constants {
   }
 
   public static class TelescopeConstants {
-    public static final int kExtensionTalonFX = 5;
+    public static final int kExtensionTalonFX = 15;
+    public static final double kTelescopeSpeed = 1.0;
   }
 
   public static class ArmConstants {
-    public static final int kRaiseSpark = 11;
+    public static final int kRaiseTalon = 4;
 
   }
 

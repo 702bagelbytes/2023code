@@ -9,9 +9,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
-    private final WPI_TalonFX talon = new WPI_TalonFX(1);
+    private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TelescopeConstants.kExtensionTalonFX);
     // // private final Encoder encoder = new Encoder(0, 0);
 
     public TurretSubsystem() {
@@ -87,7 +88,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command runCmd(DoubleSupplier input) {
-        SlewRateLimiter rateLimiter = new SlewRateLimiter(0.5);
+        SlewRateLimiter rateLimiter = new SlewRateLimiter(0.7, -0.7, 0.0);
 
         Runnable onTick = () -> {
             double speed = rateLimiter.calculate(input.getAsDouble());

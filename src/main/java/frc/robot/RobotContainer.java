@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,7 +12,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
 import frc.robot.subsystems.AHRSSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.GRABOTRONSubsystem;
+import frc.robot.subsystems.TelescopeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -28,56 +32,64 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
-  private final TurretSubsystem turretSubsystem = new TurretSubsystem();
+        private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+        private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
+        private final TurretSubsystem turretSubsystem = new TurretSubsystem();
+        private final GRABOTRONSubsystem grabotronSubsystem = new GRABOTRONSubsystem();
+        private final TelescopeSubsystem telescopeSubsystem = new TelescopeSubsystem();
+        private final ArmSubsystem armSubsystem = new ArmSubsystem();
+        private final CommandXboxController driverController = new CommandXboxController(
+                        OperatorConstants.kDriverControllerPort);
+        private final CommandXboxController coDriverController = new CommandXboxController(
+                        OperatorConstants.kCoDriverControllerPort);
 
-  private final CommandXboxController driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
-  private final CommandXboxController coDriverController = new CommandXboxController(
-      OperatorConstants.kCoDriverControllerPort);
+        /**
+         * The container for the robot. Contains subsystems, OI devices, and commands.
+         */
+        public RobotContainer() {
+                // Configure the button bindings
+                configureButtonBindings();
+        }
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
-  }
+        /**
+         * Use this method to define your button->command mappings. Buttons can be
+         * created by
+         * instantiating a {@link GenericHID} or one of its subclasses ({@link
+         * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+         * it to a {@link
+         * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+         */
+        private void configureButtonBindings() {
+                // Driver
+                // driveSubsystem.setDefaultCommand(
+                // driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () ->
+                // -driverController.getRightY()));
+                driveSubsystem.setDefaultCommand( driveSubsystem.arcadeDriveCmd(() -> driverController.getLeftY(),
+                 () -> driverController.getRightX()));
+                // driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
+                // driverController.b().onTrue(new
+                // InstantCommand(driveSubsystem::resetEncoders));
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    // Driver
-    // driveSubsystem.setDefaultCommand(
-    // driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () ->
-    // -driverController.getRightY()));
-    driveSubsystem
-        .setDefaultCommand(
-            driveSubsystem.arcadeDriveCmd(() -> -driverController.getLeftY(), () -> -driverController.getRightX()));
-    driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
-    driverController.b().onTrue(new InstantCommand(driveSubsystem::resetEncoders));
+                // Co-Driver
+                armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> coDriverController.getLeftY()));
+                coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
+                coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
+                coDriverController.leftTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
+                // turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() ->
+                // coDriverController.getRightY()));
+        }
 
-    // Co-Driver
-    turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightY()));
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    SmartDashboard.putNumber("Auto Speed", 0);
-    float initialAngle = ahrsSubsystem.getBalanceAngle();
-    return driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
-        .andThen(new WaitCommand(1.0))
-        .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle, initialAngle));
-  }
+        /**
+         * Use this to pass the autonomous command to the main {@link Robot} class.
+         *
+         * @return the command to run in autonomous
+         */
+        public Command getAutonomousCommand() {
+                SmartDashboard.putNumber("Auto Speed", 0);
+                float initialAngle = ahrsSubsystem.getBalanceAngle();
+                return driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
+                                .andThen(new WaitCommand(1.0))
+                                .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
+                                                initialAngle));
+        }
 }

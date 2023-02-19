@@ -5,21 +5,22 @@ import java.util.function.DoubleSupplier;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.Encoder;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
-    private final CANSparkMax raiseSpark = new CANSparkMax(ArmConstants.kRaiseSpark, MotorType.kBrushed);
-    private final SlewRateLimiter rateLimiter = new SlewRateLimiter(0.7, -0.7, 0.2);
+    private final WPI_TalonSRX kRaiseTalon = new WPI_TalonSRX(Constants.ArmConstants.kRaiseTalon);
+    private final SlewRateLimiter rateLimiter = new SlewRateLimiter(0.7, -0.7, 0.0);
     Encoder encoder = new Encoder(0, 1);
 
     public ArmSubsystem() {
-        raiseSpark.setIdleMode(IdleMode.kBrake);
+        kRaiseTalon.setNeutralMode(NeutralMode.Brake);
         // 1 / cpr / gear ratio
         encoder.setDistancePerPulse(1 / 1024.0 / 48.0);
         rateLimiter.reset(0);
@@ -29,7 +30,9 @@ public class ArmSubsystem extends SubsystemBase {
         if (value == 0) {
             rateLimiter.reset(0);
         }
-        raiseSpark.set(value == 0 ? value : rateLimiter.calculate(value));
+        var valSend = value == 0 ? value : rateLimiter.calculate(value);
+        kRaiseTalon.set(valSend);
+        SmartDashboard.putNumber("ArmValSend", valSend);
     }
 
     @Override
