@@ -64,14 +64,14 @@ public class RobotContainer {
                 // driveSubsystem.setDefaultCommand(
                 // driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () ->
                 // -driverController.getRightY()));
-                driveSubsystem.setDefaultCommand( driveSubsystem.arcadeDriveCmd(() -> driverController.getLeftY(),
-                 () -> driverController.getRightX()));
+                driveSubsystem.setDefaultCommand(driveSubsystem.arcadeDriveCmd(() -> driverController.getLeftY(),
+                                () -> driverController.getRightX()));
                 // driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
                 // driverController.b().onTrue(new
                 // InstantCommand(driveSubsystem::resetEncoders));
 
                 // Co-Driver
-                armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> coDriverController.getLeftY()));
+                armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
                 coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
                 coDriverController.leftTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());

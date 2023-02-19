@@ -16,23 +16,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonSRX kRaiseTalon = new WPI_TalonSRX(Constants.ArmConstants.kRaiseTalon);
-    private final SlewRateLimiter rateLimiter = new SlewRateLimiter(0.7, -0.7, 0.0);
+    // private final SlewRateLimiter rateLimiter = new SlewRateLimiter(0.7, -0.7,
+    // 0.0);
     Encoder encoder = new Encoder(0, 1);
 
     public ArmSubsystem() {
         kRaiseTalon.setNeutralMode(NeutralMode.Brake);
         // 1 / cpr / gear ratio
         encoder.setDistancePerPulse(1 / 1024.0 / 48.0);
-        rateLimiter.reset(0);
+        // rateLimiter.reset(0);
     }
 
     public void set(double value) {
-        if (value == 0) {
-            rateLimiter.reset(0);
-        }
-        var valSend = value == 0 ? value : rateLimiter.calculate(value);
-        kRaiseTalon.set(valSend);
-        SmartDashboard.putNumber("ArmValSend", valSend);
+        // if (value == 0) {
+        // rateLimiter.reset(0);
+        // }
+        // var valSend = value == 0 ? value : rateLimiter.calculate(value);
+        kRaiseTalon.set(value);
+        // SmartDashboard.putNumber("ArmValSend", valSend);
     }
 
     @Override
