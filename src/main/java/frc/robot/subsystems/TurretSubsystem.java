@@ -19,12 +19,12 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public void set(double value) {
-        talon.set(value * 0.5);
+        talon.set(value * 0.2);
     }
 
     private static double clampSpeed(double numRotations, double speed) {
-        final double MAX_LEFT = -.5;
-        final double MAX_RIGHT = .5;
+        final double MAX_LEFT = -.2;
+        final double MAX_RIGHT = .2;
 
         final double[][] SLOWING_THRESHOLD = {
                 { .1, 1 / 2 },
@@ -36,7 +36,7 @@ public class TurretSubsystem extends SubsystemBase {
         }
 
         double rotationsAbs = Math.abs(numRotations);
-        double slowed = .5 - rotationsAbs;
+        double slowed = .2 - rotationsAbs;
 
         if (slowed < SLOWING_THRESHOLD[0][0]) {
             return speed * SLOWING_THRESHOLD[0][1];
@@ -64,9 +64,9 @@ public class TurretSubsystem extends SubsystemBase {
 
                 double speed;
                 if (numRotations > 0) {
-                    speed = -.5;
+                    speed = -.2;
                 } else {
-                    speed = .5;
+                    speed = .2;
                 }
 
                 if (allowErrorFor(numRotations, .1, 0)) {
