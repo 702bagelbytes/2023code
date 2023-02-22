@@ -28,11 +28,11 @@ public final class Constants {
 
   public static class DriveConstants {
     public static final int SPARK_FL_ID = 1;
-    public static final int TALON_ML_ID = 27;
-    public static final int TALON_BL_ID = 4;
-    public static final int SPARK_FR_ID = 3;
+    public static final int TALON_ML_ID = 36;
+    public static final int TALON_BL_ID = 35;
+    public static final int SPARK_FR_ID = 4;
     public static final int TALON_MR_ID = 16;
-    public static final int TALON_BR_ID = 35;
+    public static final int TALON_BR_ID = 27;
 
     public static final boolean LEFT_ENCODER_INVERTED = true;
     public static final boolean RIGHT_ENCODER_INVERTED = false;
@@ -46,10 +46,17 @@ public final class Constants {
       public static final double KV = 0.0;
       public static final double KA = 0.0;
     }
+
+    public static class Ramsete {
+      public static final double P = 0.5;
+      public static final double I = 0.5;
+      public static final double D = 0.5;
+
+    }
   }
 
   public static class TurretConstants {
-    public static final int kTurretTalonFX = 1;
+    public static final int kTurretTalonFX = 32;
     public static final double kMaxOutput = 0.5;
   }
 
@@ -59,7 +66,7 @@ public final class Constants {
   }
 
   public static class ArmConstants {
-    public static final int kRaiseTalon = 4;
+    public static final int kRaiseTalon = 20;
 
     public static final double kMaxArmOutput = 0.5;
   }

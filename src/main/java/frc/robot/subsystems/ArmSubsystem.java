@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -18,12 +20,13 @@ public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonSRX kRaiseTalon = new WPI_TalonSRX(Constants.ArmConstants.kRaiseTalon);
     // private final SlewRateLimiter rateLimiter = new SlewRateLimiter(0.7, -0.7,
     // 0.0);
-    Encoder encoder = new Encoder(0, 1);
+    Encoder encoder = new Encoder(0, 1, false, EncodingType.k2X);
 
     public ArmSubsystem() {
         kRaiseTalon.setNeutralMode(NeutralMode.Brake);
         // 1 / cpr / gear ratio
-        encoder.setDistancePerPulse(1 / 1024.0 / 48.0);
+        // encoder.setDistancePerPulse(1 / 1024.0 / 48.0);
+        encoder.reset();
         // rateLimiter.reset(0);
 
     }

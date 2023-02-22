@@ -1,0 +1,50 @@
+# idea for a better config
+---
+operator:
+  driver: 0
+  codriver: 1
+
+drive:
+  speed: 0.5
+  wheel_radius: 4.0 # inches
+  inch_to_meter: 0.0254
+
+  left:
+    spark_front: 1
+    talon_middle: 27
+    talon_back: 4
+  right:
+    spark_front: 3
+    talon_middle: 16
+    talon_back: 35
+
+encoders:
+  invert_left: true
+  invert_right: false
+
+motor_feed:
+  ks: 0.0
+  kv: 0.0
+  ka: 0.0
+
+turret:
+  talon_id: 1 # swivel
+  max_output: 0.5
+
+telescope:
+  talon_id: 15 # in/out
+  max_output: 1 #aka speed
+
+arm:
+  talon_id: 4 # up/down
+  max_output: 0.5
+
+grabotron:
+  rev_pneumatics_hub_id: 1
+  extend_solenoid: 0
+  retract_solenoid: 1
+
+ramsete:
+  p: 0.5
+  i: 0.5
+  d: 0.5

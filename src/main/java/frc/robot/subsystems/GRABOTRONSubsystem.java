@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.GRABOTRONConstants;
@@ -17,6 +18,7 @@ public class GRABOTRONSubsystem extends SubsystemBase {
     public GRABOTRONSubsystem() {
         phCompressor.enableDigital();
         grabSolenoid.set(Value.kReverse);
+        SmartDashboard.putNumber("Pressure", phCompressor.getPressure());
     }
 
     public void toggle() {

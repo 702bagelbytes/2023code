@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants.MotorFeed;
 // import frc.robot.Constants.*;
+import frc.robot.Constants.DriveConstants.Ramsete;
 
 import static frc.robot.Constants.inchToMeter;
 
@@ -58,8 +59,8 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem() {
         sparkFL.setInverted(true);
         sparkFR.setInverted(true);
-        leftGroup.setInverted(true);
-        rightGroup.setInverted(false);
+        leftGroup.setInverted(false);
+        rightGroup.setInverted(true);
 
         sparkFL.setIdleMode(IdleMode.kBrake);
         talonML.setNeutralMode(NeutralMode.Brake);
@@ -112,11 +113,6 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> drive.tankDrive(0, 0));
     }
 
-    public Command arcadeDriveCmd(Supplier<Double> driveInput, Supplier<Double> rotationInput) {
-        return this.runEnd(() -> drive.arcadeDrive(driveInput.get(), rotationInput.get()),
-                () -> drive.arcadeDrive(0, 0));
-    }
-
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
     }
@@ -130,27 +126,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    /**
-     * This feature is not included in the library.
-     * 
-     * @param spark a spark motor
-     * @return the motor's voltage
-     * @see https://www.chiefdelphi.com/t/get-voltage-from-spark-max/344136/5 for a
-     *      detailed explanation.
-     */
-    public double voltageFromSpark(CANSparkMax spark) {
-        return spark.getBusVoltage() * spark.getAppliedOutput();
-    }
-
-    public double getLeftVoltage() {
-        return talonBL.getMotorOutputVoltage() + talonML.getMotorOutputVoltage() + voltageFromSpark(sparkFL);
-    }
-
-    public double getRightVoltage() {
-        return talonBR.getMotorOutputVoltage() + talonMR.getMotorOutputVoltage() + voltageFromSpark(sparkFR);
-    }
-
     public void outputVolts(double left, double right) {
+        this.leftGroup.setVoltage(left);
+        this.rightGroup.setVoltage(right);
     }
 
     public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
@@ -161,11 +139,17 @@ public class DriveSubsystem extends SubsystemBase {
                         this.resetOdometry(traj.getInitialPose());
                     }
                 }),
-                new PPRamseteCommand(traj, this::getPose, new RamseteController(),
+                new PPRamseteCommand(
+                        traj,
+                        this::getPose,
+                        new RamseteController(),
                         new SimpleMotorFeedforward(MotorFeed.KS, MotorFeed.KV, MotorFeed.KA),
                         this.kinematics,
                         this::getWheelSpeeds,
-                        new PIDController(0, 0, 0), new PIDController(0, 0, 0), this::outputVolts, this));
+                        new PIDController(Ramsete.P, Ramsete.I, Ramsete.D),
+                        new PIDController(Ramsete.P, Ramsete.I, Ramsete.D),
+                        this::outputVolts,
+                        this));
     }
 
     private void resetOdometry(Pose2d initialPose) {

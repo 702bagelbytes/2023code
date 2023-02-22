@@ -22,13 +22,13 @@ public class TurretSubsystem extends SubsystemBase {
         talon.set(value * 0.2);
     }
 
-    private static double clampSpeed(double numRotations, double speed) {
-        final double MAX_LEFT = -.2;
-        final double MAX_RIGHT = .2;
+    private static double clampRotation(double numRotations, double speed) {
+        final double MAX_LEFT = -.5;
+        final double MAX_RIGHT = .5;
 
         final double[][] SLOWING_THRESHOLD = {
-                { .1, 1 / 2 },
-                { .05, 1 / 6 }
+                { .1, 1d / 2d },
+                { .05, 1d / 6d }
         };
 
         if (numRotations > MAX_RIGHT || numRotations < MAX_LEFT) {
@@ -36,7 +36,7 @@ public class TurretSubsystem extends SubsystemBase {
         }
 
         double rotationsAbs = Math.abs(numRotations);
-        double slowed = .2 - rotationsAbs;
+        double slowed = .5 - rotationsAbs;
 
         if (slowed < SLOWING_THRESHOLD[0][0]) {
             return speed * SLOWING_THRESHOLD[0][1];
@@ -49,6 +49,7 @@ public class TurretSubsystem extends SubsystemBase {
         return speed;
     }
 
+    @Deprecated
     private boolean allowErrorFor(double actual, double errAmt, double expected) {
         double[] bounds = { expected + errAmt, expected - errAmt };
         return actual <= bounds[0] && actual >= bounds[1];
@@ -57,6 +58,7 @@ public class TurretSubsystem extends SubsystemBase {
     /**
      * FIXME: does not work
      */
+    @Deprecated
     public Command resetArm() {
         return Commands.runEnd(() -> {
             while (true) {
@@ -97,7 +99,7 @@ public class TurretSubsystem extends SubsystemBase {
 
             SmartDashboard.putNumber("number of rotations: ", numRotations);
 
-            this.set(clampSpeed(numRotations, speed));
+            this.set(clampRotation(numRotations, speed));
         };
 
         Runnable end = () -> this.set(0.0);

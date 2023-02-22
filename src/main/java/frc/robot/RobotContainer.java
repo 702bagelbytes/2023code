@@ -64,8 +64,8 @@ public class RobotContainer {
                 // driveSubsystem.setDefaultCommand(
                 // driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () ->
                 // -driverController.getRightY()));
-                driveSubsystem.setDefaultCommand(driveSubsystem.arcadeDriveCmd(() -> driverController.getLeftY(),
-                                () -> driverController.getRightX()));
+                driveSubsystem.setDefaultCommand(driveSubsystem.tankDriveCmd(() -> driverController.getLeftY(),
+                                () -> driverController.getRightY()));
                 // driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
                 // driverController.b().onTrue(new
                 // InstantCommand(driveSubsystem::resetEncoders));
