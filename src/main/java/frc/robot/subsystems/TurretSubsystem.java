@@ -13,14 +13,14 @@ import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
     private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TurretConstants.kTurretTalonFX);
-    private final SlewRateLimiter limiter = new SlewRateLimiter(0.5, -0.5, 0.0);
+    SlewRateLimiter rateLimiter = new SlewRateLimiter(0.5, -0.5, 0.0);
     // // private final Encoder encoder = new Encoder(0, 0);
 
     public TurretSubsystem() {
     }
 
     public void set(double value) {
-        talon.set(limiter.calculate(value * 0.2));
+        talon.set(rateLimiter.calculate(value * 0.2));
     }
 
     private static double clampRotation(double numRotations, double speed) {
@@ -92,7 +92,6 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command runCmd(DoubleSupplier input) {
-        SlewRateLimiter rateLimiter = new SlewRateLimiter(0.5, -0.5, 0.0);
 
         Runnable onTick = () -> {
             double speed = 0.5 * rateLimiter.calculate(input.getAsDouble());
