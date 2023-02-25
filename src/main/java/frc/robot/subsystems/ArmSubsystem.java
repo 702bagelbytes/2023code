@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -17,13 +18,13 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
-    private final WPI_TalonSRX kRaiseTalon = new WPI_TalonSRX(Constants.ArmConstants.kRaiseTalon);
+    private final WPI_TalonFX kRaiseTalonFX = new WPI_TalonFX(Constants.ArmConstants.kRaiseTalonFX);
     // private final SlewRateLimiter rateLimiter = new SlewRateLimiter(0.7, -0.7,
     // 0.0);
     Encoder encoder = new Encoder(0, 1, false, EncodingType.k2X);
 
     public ArmSubsystem() {
-        kRaiseTalon.setNeutralMode(NeutralMode.Brake);
+        kRaiseTalonFX.setNeutralMode(NeutralMode.Brake);
         // 1 / cpr / gear ratio
         // encoder.setDistancePerPulse(1 / 1024.0 / 48.0);
         encoder.reset();
@@ -36,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
         // rateLimiter.reset(0);
         // }
         // var valSend = value == 0 ? value : rateLimiter.calculate(value);
-        kRaiseTalon.set(value * Constants.ArmConstants.kMaxArmOutput);
+        kRaiseTalonFX.set(value * Constants.ArmConstants.kMaxArmOutput);
         // SmartDashboard.putNumber("ArmValSend", valSend);
     }
 

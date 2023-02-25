@@ -66,13 +66,13 @@ public final class Constants {
   }
 
   public static class ArmConstants {
-    public static final int kRaiseTalon = 20;
+    public static final int kRaiseTalonFX = 10;
 
-    public static final double kMaxArmOutput = 0.5;
+    public static final double kMaxArmOutput = 0.25;
   }
 
   public static class GRABOTRONConstants {
-    public static final int kRevPneumaticsHubId = 1;
+    public static final int kRevPneumaticsHubId = 5;
     public static final int kExtendSolenoid = 0;
     public static final int kRetractSolenoid = 1;
   }
