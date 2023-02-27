@@ -10,7 +10,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class BalanceCommand extends CommandBase {
     private final DriveSubsystem driveSubsystem;
     private final Supplier<Float> balanceAngleSupplier;
-    private static final PIDController controller = new PIDController(0.05, 0.005, 0.005);
+    private static final PIDController controller = new PIDController(0.05, 0.0, 0.005);
 
     public BalanceCommand(DriveSubsystem driveSubsystem, Supplier<Float> balanceAngleSupplier, double setpoint) {
         this.driveSubsystem = driveSubsystem;
@@ -22,7 +22,7 @@ public class BalanceCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double speed = controller.calculate(balanceAngleSupplier.get());
+        double speed = driveSubsystem.chargeStationClampSpeed(controller.calculate(balanceAngleSupplier.get()));
         SmartDashboard.putData(controller);
         SmartDashboard.putNumber("Auto Speed", speed);
         driveSubsystem.tankDrive(speed, speed);

@@ -26,10 +26,14 @@ public class ArmSubsystem extends SubsystemBase {
     public ArmSubsystem() {
         kRaiseTalonFX.setNeutralMode(NeutralMode.Brake);
         // 1 / cpr / gear ratio
-        // encoder.setDistancePerPulse(1 / 1024.0 / 48.0);
+        // encoder.setDistancePerPulse(1 / 2048.0 / 48.0);
         encoder.reset();
         // rateLimiter.reset(0);
 
+    }
+    
+    public Encoder getEncoder() {
+        return encoder;
     }
 
     public void set(double value) {
@@ -45,7 +49,7 @@ public class ArmSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("armEncoder", encoder.getDistance());
     }
-
+    
     public Command moveCmd(DoubleSupplier input) {
         return this.runEnd(() -> this.set(input.getAsDouble()), () -> this.set(0));
     }

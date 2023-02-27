@@ -96,6 +96,15 @@ public class DriveSubsystem extends SubsystemBase {
         return Math.copySign(minSpeed, speed) + (1 - minSpeed) * speed;
     }
 
+    public double chargeStationClampSpeed(double speed) {
+        speed = MathUtil.clamp(speed, -0.5, 0.5);
+        if (Math.abs(speed) <= 0.05) {
+            return 0;
+        }
+        double minSpeed = 0.2;
+        return Math.copySign(minSpeed, speed) + (1 - minSpeed) * speed;
+    }
+
     public void tankDrive(double leftSpeed, double rightSpeed) {
         SmartDashboard.putNumber("Raw Left Speed", leftSpeed);
         SmartDashboard.putNumber("Raw Right Speed", rightSpeed);

@@ -21,6 +21,9 @@ public class GRABOTRONSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pressure", phCompressor.getPressure());
     }
 
+    public DoubleSolenoid getSolenoid() {
+        return grabSolenoid;
+    }
     public void toggle() {
         grabSolenoid.toggle();
     }
