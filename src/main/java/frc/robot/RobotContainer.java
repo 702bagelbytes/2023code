@@ -4,11 +4,17 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
+import com.pathplanner.lib.PathPlannerTrajectory;
+
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
 import frc.robot.subsystems.AHRSSubsystem;
@@ -18,6 +24,7 @@ import frc.robot.subsystems.GRABOTRONSubsystem;
 import frc.robot.subsystems.TelescopeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -49,6 +56,10 @@ public class RobotContainer {
         public RobotContainer() {
                 // Configure the button bindings
                 configureButtonBindings();
+
+                SmartDashboard.putData("run this", (Sendable) Commands.runOnce(() -> {
+
+                }));
         }
 
         /**
