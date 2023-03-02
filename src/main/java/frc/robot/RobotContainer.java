@@ -95,10 +95,7 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
                 SmartDashboard.putNumber("Auto Speed", 0);
-                float initialAngle = ahrsSubsystem.getBalanceAngle();
-                return driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
-                                .andThen(new WaitCommand(1.0))
-                                .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
-                                                initialAngle));
+                return new BalanceCommand(driveSubsystem, ahrsSubsystem, ahrsSubsystem::getBalanceAngle,
+                                ahrsSubsystem.getBalanceAngle());
         }
 }
