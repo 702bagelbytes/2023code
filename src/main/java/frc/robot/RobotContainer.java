@@ -57,9 +57,8 @@ public class RobotContainer {
                 // Configure the button bindings
                 configureButtonBindings();
 
-                SmartDashboard.putData("run this", (Sendable) Commands.runOnce(() -> {
-
-                }));
+                SmartDashboard.putData("Zero Arm Angle", (Sendable) armSubsystem.zeroTheCounter());
+                SmartDashboard.putData("Toggle Arm Limits", (Sendable) armSubsystem.toggleEncoderLimiting());
         }
 
         /**

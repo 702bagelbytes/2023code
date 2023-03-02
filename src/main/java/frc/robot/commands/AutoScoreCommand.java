@@ -17,7 +17,7 @@ public class AutoScoreCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    armSubsystem.getEncoder().reset();
+    // armSubsystem.getEncoder().reset();
 
   }
 

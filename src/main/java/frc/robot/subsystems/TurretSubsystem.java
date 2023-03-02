@@ -87,8 +87,8 @@ public class TurretSubsystem extends SubsystemBase {
      * 
      * @return the number of rotations
      */
-    public double getRotations() {
-        return talon.getSelectedSensorPosition() / 4096D / 36D;
+    public double getRotationsAsDeg() {
+        return talon.getSelectedSensorPosition() / 4096D / 36D * 360;
     }
 
     public Command runCmd(DoubleSupplier input) {
@@ -96,9 +96,9 @@ public class TurretSubsystem extends SubsystemBase {
         Runnable onTick = () -> {
             double speed = 0.5 * rateLimiter.calculate(input.getAsDouble());
 
-            double numRotations = this.getRotations();
+            double numRotations = this.getRotationsAsDeg();
 
-            SmartDashboard.putNumber("number of rotations: ", numRotations);
+            SmartDashboard.putNumber("Turret Rotations", numRotations);
 
             this.set(clampRotation(numRotations, speed));
         };
