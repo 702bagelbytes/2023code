@@ -18,12 +18,13 @@ public class GRABOTRONSubsystem extends SubsystemBase {
     public GRABOTRONSubsystem() {
         phCompressor.enableDigital();
         grabSolenoid.set(Value.kForward);
-        SmartDashboard.putNumber("Pressure", phCompressor.getPressure());
+        SmartDashboard.putString("Pressure", String.format("%.2f", phCompressor.getPressure()));
     }
 
     public DoubleSolenoid getSolenoid() {
         return grabSolenoid;
     }
+
     public void toggle() {
         grabSolenoid.toggle();
     }

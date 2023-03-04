@@ -104,12 +104,9 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
-        SmartDashboard.putNumber("Raw Left Speed", leftSpeed);
-        SmartDashboard.putNumber("Raw Right Speed", rightSpeed);
         leftSpeed = clampSpeed(leftSpeed);
         rightSpeed = clampSpeed(rightSpeed);
-        SmartDashboard.putNumber("Left Speed", leftSpeed);
-        SmartDashboard.putNumber("Right Speed", rightSpeed);
+        SmartDashboard.putString("Speed", String.format("L: %.2f, R: %.2f}", leftSpeed, rightSpeed));
         drive.tankDrive(leftSpeed, rightSpeed);
     }
 
@@ -165,8 +162,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Left Encoder", leftEncoder.getPosition());
-        SmartDashboard.putNumber("Right Encoder", rightEncoder.getPosition());
+        SmartDashboard.putString("Drive Encoders",
+                String.format("L: %.2f, R: %.2f", leftEncoder.getPosition(), rightEncoder.getPosition()));
         var gyroAngle = ahrsSubsystem.getRotation2d();
 
         // Update the pose

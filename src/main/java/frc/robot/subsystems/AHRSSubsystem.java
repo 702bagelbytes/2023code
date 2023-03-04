@@ -28,8 +28,11 @@ public class AHRSSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Yaw", ahrs.getYaw());
-        SmartDashboard.putNumber("Pitch", ahrs.getPitch());
-        SmartDashboard.putNumber("Roll", ahrs.getRoll());
+        String msg = String.format("Y: %.3f, P: %.3f, R: %.3f", ahrs.getYaw(), ahrs.getPitch(), ahrs.getRoll());
+        SmartDashboard.putString("Gyro", msg);
+
+        // SmartDashboard.putNumber("Yaw", ahrs.getYaw());
+        // SmartDashboard.putNumber("Pitch", ahrs.getPitch());
+        // SmartDashboard.putNumber("Roll", ahrs.getRoll());
     }
 }

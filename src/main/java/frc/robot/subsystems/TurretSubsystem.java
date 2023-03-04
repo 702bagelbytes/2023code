@@ -14,7 +14,7 @@ import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
     private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TurretConstants.kTurretTalonFX);
-    SlewRateLimiter rateLimiter = new SlewRateLimiter(1, -1, 0.0);
+    SlewRateLimiter rateLimiter = new SlewRateLimiter(0.5, -0.5, 0.0);
     // // private final Encoder encoder = new Encoder(0, 0);
 
     public TurretSubsystem() {
@@ -96,7 +96,7 @@ public class TurretSubsystem extends SubsystemBase {
     public Command runCmd(DoubleSupplier input) {
 
         Runnable onTick = () -> {
-            double speed = 0.5 * rateLimiter.calculate(input.getAsDouble());
+            double speed = 0.2 * rateLimiter.calculate(input.getAsDouble());
 
             double numRotations = this.getRotationsAsDeg();
 
