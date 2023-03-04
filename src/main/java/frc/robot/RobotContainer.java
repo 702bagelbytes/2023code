@@ -59,6 +59,7 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Zero Arm Angle", (Sendable) armSubsystem.zeroTheCounter());
                 SmartDashboard.putData("Toggle Arm Limits", (Sendable) armSubsystem.toggleEncoderLimiting());
+                SmartDashboard.putData("Up To Zone", (Sendable) armSubsystem.raiseArmToZone());
         }
 
         /**
@@ -94,6 +95,13 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return new AutoBalanceCommand(driveSubsystem, ahrsSubsystem);
+                return Commands.runOnce(() -> {
+                        float initialAngle = ahrsSubsystem.getBalanceAngle();
+                        driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
+                                        .andThen(new WaitCommand(.2))
+                                        .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
+                                                        initialAngle))
+                                        .schedule();
+                });
         }
 }

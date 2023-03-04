@@ -16,20 +16,29 @@ public class AutoBalanceCommand extends CommandBase {
         addRequirements(driveSubsystem);
     }
 
-    public float getInitialAngle() {
-        float initialAngle = ahrsSubsystem.getBalanceAngle();
-        return initialAngle;
+    public double getAngle() {
+        double angle = ahrsSubsystem.getBalanceAngle();
+        return angle;
+    }
+
+    Double initialAngle = null;
+
+    public double getInitialAngle() {
+        assert initialAngle != null : "please init first";
+        return this.initialAngle;
     }
 
     @Override
     public void initialize() {
-        getInitialAngle();
+        if (initialAngle == null) {
+            this.initialAngle = getAngle();
+        }
     }
 
     @Override
     public void execute() {
-        driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
-                .andThen(new WaitCommand(1))
+        driveSubsystem.tankDriveCmd(() -> -0.75, () -> -0.75).withTimeout(2)
+                .andThen(new WaitCommand(.2))
                 .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle, getInitialAngle()));
     }
 

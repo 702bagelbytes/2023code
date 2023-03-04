@@ -75,21 +75,71 @@ public class ArmSubsystem extends SubsystemBase {
      * Tried to create a command to bring the arm into its
      * usable range after resetting the encoder value.
      * 
-     * @deprecated DO NOT RUN!!!! NOT TESTED
+     * // 6890
+     * 
+     * 
+     * 
+     * @deprecated NOT TESTED
+     * 
      * @return a command for the {@link SmartDashboard}
      */
-    // @Deprecated(since = "3/1/2022")
-    // public Command x____Command() {
-    // return Commands.runOnce(() -> {
-    // while (getEncoderPositionDeg() > MAX_DOWN_DEG) {
-    // kRaiseTalonFX.set(.2);
-    // }
+    public Command raiseArmToZone() {
+        return Commands.runOnce(new Runnable() {
+            double encoderPositionDeg = getEncoderPositionDeg();
 
-    // kRaiseTalonFX.set(0);
-    // toggleEncoderLimiting();
+            /**
+             * Mock for {@link ArmSubsystem#getEncoderPositionDeg()}
+             * 
+             * @return
+             */
+            private double getEncoderPositionDeg() {
+                return this.encoderPositionDeg;
+            }
 
-    // });
-    // }
+            /**
+             * {@link WPI_TalonFX#set(double)}
+             * Mock for {@link TalonFX#set(double)}
+             * 
+             * @param value
+             */
+            private void kRaiseTalonFx$$set(double value) {
+                this.encoderPositionDeg += value;
+            }
+
+            private void toggleEncoderLimiting() {
+                SmartDashboard.putString("(Mock)end",
+                        String.format("this.getEncoderPositionDeg() = %.2f, TARGET = %.2f",
+                                this.getEncoderPositionDeg(), MAX_DOWN_DEG));
+
+            }
+
+            @Override
+            public void run() {
+                while (this.getEncoderPositionDeg() < MAX_DOWN_DEG) {
+                    SmartDashboard.putNumber("(Mock)", this.getEncoderPositionDeg());
+
+                    kRaiseTalonFx$$set(.2);
+                    // ^^ kRaiseTalonFX.set(.2);
+
+                }
+
+                kRaiseTalonFx$$set(0);
+                // ^^ kRaiseTalonFX.set(0);
+
+                this.toggleEncoderLimiting();
+            }
+        });/*
+            * () -> {
+            * while (getEncoderPositionDeg() < MAX_DOWN_DEG) {
+            * // kRaiseTalonFX.set(.2);
+            * }
+            * 
+            * // kRaiseTalonFX.set(0);
+            * toggleEncoderLimiting();
+            * 
+            * });
+            */
+    }
 
     /**
      * Command to be used in the SmartDashboard.
