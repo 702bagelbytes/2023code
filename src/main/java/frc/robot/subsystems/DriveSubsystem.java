@@ -1,11 +1,9 @@
 package frc.robot.subsystems;
 
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.lang.Math;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 import com.revrobotics.CANSparkMax;

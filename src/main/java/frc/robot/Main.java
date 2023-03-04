@@ -4,16 +4,7 @@
 
 package frc.robot;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Map;
-
-import org.yaml.snakeyaml.Yaml;
-
 import edu.wpi.first.wpilibj.RobotBase;
-import lombok.Data;
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all.
@@ -31,7 +22,6 @@ public final class Main {
    * If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-    // System.out.println(CONFIG);
     RobotBase.startRobot(Robot::new);
   }
 }

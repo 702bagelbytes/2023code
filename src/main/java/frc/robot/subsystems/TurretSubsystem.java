@@ -7,20 +7,22 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
     private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TurretConstants.kTurretTalonFX);
-    SlewRateLimiter rateLimiter = new SlewRateLimiter(0.5, -0.5, 0.0);
+    SlewRateLimiter rateLimiter = new SlewRateLimiter(1, -1, 0.0);
     // // private final Encoder encoder = new Encoder(0, 0);
 
     public TurretSubsystem() {
+        talon.setNeutralMode(NeutralMode.Brake);
     }
 
     public void set(double value) {
-        talon.set(rateLimiter.calculate(value * 0.2));
+        talon.set(rateLimiter.calculate(value * 0.1));
     }
 
     private static double clampRotation(double numRotations, double speed) {

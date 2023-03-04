@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
@@ -94,8 +94,6 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                SmartDashboard.putNumber("Auto Speed", 0);
-                return new BalanceCommand(driveSubsystem, ahrsSubsystem, ahrsSubsystem::getBalanceAngle,
-                                ahrsSubsystem.getBalanceAngle());
+                return new AutoBalanceCommand(driveSubsystem, ahrsSubsystem);
         }
 }
