@@ -95,13 +95,14 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return Commands.runOnce(() -> {
-                        float initialAngle = ahrsSubsystem.getBalanceAngle();
-                        driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
-                                        .andThen(new WaitCommand(.2))
-                                        .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
-                                                        initialAngle))
-                                        .schedule();
-                });
+                // return Commands.runOnce(() -> {
+                // float initialAngle = ahrsSubsystem.getBalanceAngle();
+                // driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
+                // .andThen(new WaitCommand(.2))
+                // .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
+                // initialAngle))
+                // .schedule();
+                // });
+                return null;
         }
 }

@@ -96,13 +96,9 @@ public class TurretSubsystem extends SubsystemBase {
     public Command runCmd(DoubleSupplier input) {
 
         Runnable onTick = () -> {
-            double speed = 0.2 * rateLimiter.calculate(input.getAsDouble());
+            double speed = 0.1 * rateLimiter.calculate(input.getAsDouble());
 
-            double numRotations = this.getRotationsAsDeg();
-
-            SmartDashboard.putNumber("Turret Rotations", numRotations);
-
-            this.set(clampRotation(numRotations, speed));
+            this.set(speed);
         };
 
         Runnable end = () -> this.set(0.0);

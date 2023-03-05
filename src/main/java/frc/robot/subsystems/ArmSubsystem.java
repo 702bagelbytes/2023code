@@ -85,7 +85,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public Command raiseArmToZone() {
         return Commands.runOnce(new Runnable() {
-            double encoderPositionDeg = getEncoderPositionDeg();
+            double encoderPositionDeg = ArmSubsystem.this.getEncoderPositionDeg();
 
             /**
              * Mock for {@link ArmSubsystem#getEncoderPositionDeg()}
