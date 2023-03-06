@@ -4,21 +4,24 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.GRABOTRONSubsystem;
+import frc.robot.subsystems.TelescopeSubsystem;
 
 public class AutoScoreCommand extends CommandBase {
   ArmSubsystem armSubsystem;
   GRABOTRONSubsystem grabotronSubsystem;
-  PIDController pidController = new PIDController(0, 0, 0);
+  TelescopeSubsystem telescopeSubsystem;
 
-  public AutoScoreCommand(ArmSubsystem armSubsystem, GRABOTRONSubsystem grabotronSubsystem) {
+  public AutoScoreCommand(ArmSubsystem armSubsystem, GRABOTRONSubsystem grabotronSubsystem,
+      TelescopeSubsystem telescopeSubsystem) {
     this.armSubsystem = armSubsystem;
     this.grabotronSubsystem = grabotronSubsystem;
+    this.telescopeSubsystem = telescopeSubsystem;
   }
 
   @Override
   public void initialize() {
-    // armSubsystem.getEncoder().reset();
-
+    armSubsystem.resetEncoders();
+    telescopeSubsystem.resetEncoders();
   }
 
   @Override

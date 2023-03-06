@@ -9,18 +9,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonFX kRaiseTalonFX = new WPI_TalonFX(Constants.ArmConstants.kRaiseTalonFX);
     private final SlewRateLimiter rateLimiter = new SlewRateLimiter(4.0);
+    private final PIDController armPIDController = new PIDController(0, 0, 0);
 
     public ArmSubsystem() {
         kRaiseTalonFX.setNeutralMode(NeutralMode.Brake);
         kRaiseTalonFX.setSelectedSensorPosition(0);
         // rateLimiter.reset(0);
 
+    }
+
+    public void resetEncoders() {
+        kRaiseTalonFX.setSelectedSensorPosition(0);
     }
 
     public double getEncoderPositionDeg() {

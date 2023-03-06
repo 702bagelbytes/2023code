@@ -7,7 +7,7 @@ package frc.robot;
 import java.util.ArrayList;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-
+import java.lang.Math;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -75,8 +75,8 @@ public class RobotContainer {
                 // driveSubsystem.setDefaultCommand(
                 // driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(), () ->
                 // -driverController.getRightY()));
-                driveSubsystem.setDefaultCommand(driveSubsystem.tankDriveCmd(() -> driverController.getLeftY(),
-                                () -> driverController.getRightY()));
+                driveSubsystem.setDefaultCommand(driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(),
+                                () -> -driverController.getRightY()));
                 // driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
                 // driverController.b().onTrue(new
                 // InstantCommand(driveSubsystem::resetEncoders));

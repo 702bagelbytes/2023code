@@ -37,7 +37,7 @@ public final class Constants {
     public static final boolean LEFT_ENCODER_INVERTED = true;
     public static final boolean RIGHT_ENCODER_INVERTED = false;
 
-    public static final double DRIVE_SPEED = 0.5;
+    public static final double DRIVE_SPEED = 0.7;
     public static final double WHEEL_RADIUS_INCH = 4.0;
     public static final double INCH_TO_METER = 0.0254;
 

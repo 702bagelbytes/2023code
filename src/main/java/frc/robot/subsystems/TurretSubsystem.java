@@ -4,6 +4,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +16,7 @@ import frc.robot.Constants;
 public class TurretSubsystem extends SubsystemBase {
     private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TurretConstants.kTurretTalonFX);
     SlewRateLimiter rateLimiter = new SlewRateLimiter(0.5, -0.5, 0.0);
+    LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
     // // private final Encoder encoder = new Encoder(0, 0);
 
     public TurretSubsystem() {
@@ -22,7 +24,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public void set(double value) {
-        talon.set(rateLimiter.calculate(value * 0.1));
+        talon.set(filter.calculate(value));
     }
 
     private static double clampRotation(double numRotations, double speed) {
@@ -96,7 +98,7 @@ public class TurretSubsystem extends SubsystemBase {
     public Command runCmd(DoubleSupplier input) {
 
         Runnable onTick = () -> {
-            double speed = 0.1 * rateLimiter.calculate(input.getAsDouble());
+            double speed = .2 * filter.calculate(input.getAsDouble());
 
             this.set(speed);
         };

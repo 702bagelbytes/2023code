@@ -6,19 +6,21 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TelescopeConstants;
 
 public class TelescopeSubsystem extends SubsystemBase {
     private final WPI_TalonFX extensionTalon = new WPI_TalonFX(TelescopeConstants.kExtensionTalonFX);
-
+    private final PIDController telescopePIDController = new PIDController(0, 0, 0);
     /**
      * At least that's what Adam said...
      */
-    private final static double GEARBOX_RATIO = 48;
+    private final static double GEARBOX_RATIO = 36;
 
     SlewRateLimiter limiter = new SlewRateLimiter(1.0, -1.0, 0.0);
 
@@ -28,8 +30,12 @@ public class TelescopeSubsystem extends SubsystemBase {
 
     }
 
+    public void resetEncoders() {
+        extensionTalon.setSelectedSensorPosition(0);
+    }
+
     public void set(double value) {
-        extensionTalon.set(TalonFXControlMode.PercentOutput, value);
+        extensionTalon.set(.75 * value);
     }
 
     /**
@@ -47,6 +53,6 @@ public class TelescopeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Arm Dist", this.getEncoderPosition());
+        SmartDashboard.putNumber("Telescope Dist", this.getEncoderPosition());
     }
 }
