@@ -59,7 +59,8 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Zero Arm Angle", (Sendable) armSubsystem.zeroTheCounter());
                 SmartDashboard.putData("Toggle Arm Limits", (Sendable) armSubsystem.toggleEncoderLimiting());
-                SmartDashboard.putData("Up To Zone", (Sendable) armSubsystem.raiseArmToZone());
+                // SmartDashboard.putData("Up To Zone", (Sendable)
+                // armSubsystem.raiseArmToZone());
         }
 
         /**

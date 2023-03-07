@@ -29,26 +29,20 @@ public class ArmSubsystem extends SubsystemBase {
         kRaiseTalonFX.setSelectedSensorPosition(0);
     }
 
+    // 1 / cpr / gear ratio
+    final static double BASE = 1;
+    final static double PULSES_PER_REVOLUTION = 2048;
+    final static double GEARBOX_RATIO = 48;
+    final static double SMALL_COG_TO_BIG_COG_1 = 4;
+    final static double BIG_COG_TO_BIG_COG_2 = 4;
+    final static double DEGREES_IN_A_CIRCLE = 360;
+
+    // this must be measured with an Angle Gauge
+    final static double ANGLE_TO_ZERO = -75;
+
     public double getEncoderPositionDeg() {
-        // 1 / cpr / gear ratio
-        final double BASE = 1;
-        final double PULSES_PER_REVOLUTION = 2048;
-        final double GEARBOX_RATIO = 48;
-        final double SMALL_COG_TO_BIG_COG_1 = 4;
-        final double BIG_COG_TO_BIG_COG_2 = 4;
-        final double DEGREES_IN_A_CIRCLE = 360;
 
-        // this must be measured with an Angle Gauge
-        final double ANGLE_TO_ZERO = -75;
-
-        return kRaiseTalonFX.getSelectedSensorPosition()
-                / BASE
-                / PULSES_PER_REVOLUTION
-                / GEARBOX_RATIO
-                / SMALL_COG_TO_BIG_COG_1
-                / BIG_COG_TO_BIG_COG_2
-                * DEGREES_IN_A_CIRCLE
-                + ANGLE_TO_ZERO;
+        return degFromTicks(kRaiseTalonFX.getSelectedSensorPosition());
     }
 
     private boolean willRateLimit = false;
@@ -75,6 +69,28 @@ public class ArmSubsystem extends SubsystemBase {
 
         kRaiseTalonFX.set(calculated);
 
+    }
+
+    public static double degFromTicks(double ticks) {
+        return ticks
+                / BASE
+                / PULSES_PER_REVOLUTION
+                / GEARBOX_RATIO
+                / SMALL_COG_TO_BIG_COG_1
+                / BIG_COG_TO_BIG_COG_2
+                * DEGREES_IN_A_CIRCLE
+                + ANGLE_TO_ZERO;
+    }
+
+    public static double ticksFromDeg(double deg) {
+        return (deg
+                - ANGLE_TO_ZERO)
+                / DEGREES_IN_A_CIRCLE
+                * PULSES_PER_REVOLUTION
+                * BIG_COG_TO_BIG_COG_2
+                * SMALL_COG_TO_BIG_COG_1
+                * GEARBOX_RATIO
+                * BASE;
     }
 
     /**
