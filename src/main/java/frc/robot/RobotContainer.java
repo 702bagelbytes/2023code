@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AutoBalanceCommand;
+// import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
@@ -59,6 +59,7 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Zero Arm Angle", (Sendable) armSubsystem.zeroTheCounter());
                 SmartDashboard.putData("Toggle Arm Limits", (Sendable) armSubsystem.toggleEncoderLimiting());
+                SmartDashboard.putData("Balance", (Sendable) new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle));
                 // SmartDashboard.putData("Up To Zone", (Sendable)
                 // armSubsystem.raiseArmToZone());
         }

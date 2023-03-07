@@ -17,18 +17,23 @@ public class AHRSSubsystem extends SubsystemBase {
         return ahrs.getRotation2d();
     }
 
-    public float getRoll() {
+    public double getRoll() {
         return ahrs.getRoll();
     }
 
-    public float getBalanceAngle() {
+    public double getBalanceAngle() {
         // "taking off" should translate to a positive angle being returned from the
-        return -getRoll();
+        
+        // we're stuck with a faulty encoder: add +2 to get
+        // gyro reads closer to IRL.
+        final double BAKED_IN_OFFSET = 0;// 1.1, 2;
+
+        return getRoll() + BAKED_IN_OFFSET;
     }
 
     @Override
     public void periodic() {
-        String msg = String.format("Y: %.3f, P: %.3f, R: %.3f", ahrs.getYaw(), ahrs.getPitch(), ahrs.getRoll());
+        String msg = String.format("Y: %.3f, P: %.3f, R: %.3f (raw=%.3f)", ahrs.getYaw(), ahrs.getPitch(), getBalanceAngle(), ahrs.getRoll());
         SmartDashboard.putString("Gyro", msg);
 
         // SmartDashboard.putNumber("Yaw", ahrs.getYaw());
