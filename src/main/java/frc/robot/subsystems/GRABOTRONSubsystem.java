@@ -17,7 +17,7 @@ public class GRABOTRONSubsystem extends SubsystemBase {
 
     public GRABOTRONSubsystem() {
         phCompressor.enableDigital();
-        grabSolenoid.set(Value.kForward);
+        grabSolenoid.set(Value.kReverse);
         SmartDashboard.putString("Pressure", String.format("%.2f", phCompressor.getPressure()));
     }
 

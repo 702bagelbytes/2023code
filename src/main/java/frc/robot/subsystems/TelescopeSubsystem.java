@@ -16,7 +16,6 @@ import frc.robot.Constants.TelescopeConstants;
 
 public class TelescopeSubsystem extends SubsystemBase {
     private final WPI_TalonFX extensionTalon = new WPI_TalonFX(TelescopeConstants.kExtensionTalonFX);
-    private final PIDController telescopePIDController = new PIDController(0, 0, 0);
     /**
      * At least that's what Adam said...
      */

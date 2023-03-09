@@ -98,7 +98,7 @@ public class TurretSubsystem extends SubsystemBase {
     public Command runCmd(DoubleSupplier input) {
 
         Runnable onTick = () -> {
-            double speed = .2 * filter.calculate(input.getAsDouble());
+            double speed = filter.calculate(input.getAsDouble() / 6);
 
             this.set(speed);
         };

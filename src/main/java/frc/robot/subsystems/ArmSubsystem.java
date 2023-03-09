@@ -9,24 +9,30 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonFX kRaiseTalonFX = new WPI_TalonFX(Constants.ArmConstants.kRaiseTalonFX);
     private final SlewRateLimiter rateLimiter = new SlewRateLimiter(4.0);
-    private final PIDController armPIDController = new PIDController(0, 0, 0);
 
     public ArmSubsystem() {
         kRaiseTalonFX.setNeutralMode(NeutralMode.Brake);
         kRaiseTalonFX.setSelectedSensorPosition(0);
-        // rateLimiter.reset(0);
+        kRaiseTalonFX.configReverseSoftLimitThreshold(MAX_DOWN_DEG);
+        kRaiseTalonFX.configForwardSoftLimitThreshold(MAX_UP_DEG);
+        kRaiseTalonFX.configReverseSoftLimitEnable(REVERSE_LIMIT_TOGGLE);
+        kRaiseTalonFX.configForwardSoftLimitEnable(FORWARD_LIMIT_TOGGLE);
 
     }
 
     public void resetEncoders() {
         kRaiseTalonFX.setSelectedSensorPosition(0);
+    }
+
+    public Command resetEncodersCommand() {
+
+        return this.runOnce(() -> resetEncoders());
     }
 
     // 1 / cpr / gear ratio
@@ -38,17 +44,19 @@ public class ArmSubsystem extends SubsystemBase {
     final static double DEGREES_IN_A_CIRCLE = 360;
 
     // this must be measured with an Angle Gauge
-    final static double ANGLE_TO_ZERO = -75;
+    final static double ANGLE_TO_ZERO = -72.5;
 
     public double getEncoderPositionDeg() {
 
         return degFromTicks(kRaiseTalonFX.getSelectedSensorPosition());
     }
 
-    private boolean willRateLimit = false;
+    // private boolean willRateLimit = false;
 
     public static final double MAX_UP_DEG = 15;
     public static final double MAX_DOWN_DEG = -70;
+    public static final boolean REVERSE_LIMIT_TOGGLE = false;
+    public static final boolean FORWARD_LIMIT_TOGGLE = false;
 
     /**
      * Set the speed of the motor. In other words, move it!
@@ -57,15 +65,15 @@ public class ArmSubsystem extends SubsystemBase {
     public void set(double value) {
         double calculated = rateLimiter.calculate(value * Constants.ArmConstants.kMaxArmOutput);
 
-        if (willRateLimit) {
-            if (getEncoderPositionDeg() > MAX_UP_DEG && calculated > 0) {
-                calculated = 0;
-            }
+        // if (willRateLimit) {
+        // if (getEncoderPositionDeg() > MAX_UP_DEG && calculated > 0) {
+        // calculated = 0;
+        // }
 
-            if (getEncoderPositionDeg() < MAX_DOWN_DEG && calculated < 0) {
-                calculated = 0;
-            }
-        }
+        // if (getEncoderPositionDeg() < MAX_DOWN_DEG && calculated < 0) {
+        // calculated = 0;
+        // }
+        // }
 
         kRaiseTalonFX.set(calculated);
 
@@ -101,67 +109,68 @@ public class ArmSubsystem extends SubsystemBase {
      * 
      * 
      * 
-     * @deprecated NOT TESTED
+     * @deprecat NOT TESTED
      * 
-     * @return a command for the {@link SmartDashboard}
+     * @ a command for the {@link SmartDashboard}
      */
-    public Command raiseArmToZone() {
-        return Commands.runOnce(new Runnable() {
-            double encoderPositionDeg = ArmSubsystem.this.getEncoderPositionDeg();
+    // public Command raiseArmToZone() {
+    // return Commands.runOnce(new Runnable() {
+    // double encoderPositionDeg = ArmSubsystem.this.getEncoderPositionDeg();
 
-            /**
-             * Mock for {@link ArmSubsystem#getEncoderPositionDeg()}
-             * 
-             * @return
-             */
-            private double getEncoderPositionDeg() {
-                return this.encoderPositionDeg;
-            }
+    // /**
+    // * Mock for {@link ArmSubsystem#getEncoderPositionDeg()}
+    // *
+    // * @return
+    // */
+    // private double getEncoderPositionDeg() {
+    // return this.encoderPositionDeg;
+    // }
 
-            /**
-             * {@link WPI_TalonFX#set(double)}
-             * Mock for {@link TalonFX#set(double)}
-             * 
-             * @param value
-             */
-            private void kRaiseTalonFx$$set(double value) {
-                this.encoderPositionDeg += value;
-            }
+    // /**
+    // * {@link WPI_TalonFX#set(double)}
+    // * Mock for {@link TalonFX#set(double)}
+    // *
+    // * @param value
+    // */
+    // private void kRaiseTalonFx$$set(double value) {
+    // this.encoderPositionDeg += value;
+    // }
 
-            private void toggleEncoderLimiting() {
-                SmartDashboard.putString("(Mock)end",
-                        String.format("this.getEncoderPositionDeg() = %.2f, TARGET = %.2f",
-                                this.getEncoderPositionDeg(), MAX_DOWN_DEG));
+    // private void toggleEncoderLimiting() {
+    // SmartDashboard.putString("(Mock)end",
+    // String.format("this.getEncoderPositionDeg() = %.2f, TARGET = %.2f",
+    // this.getEncoderPositionDeg(), MAX_DOWN_DEG));
 
-            }
+    // }
 
-            @Override
-            public void run() {
-                while (this.getEncoderPositionDeg() < MAX_DOWN_DEG) {
-                    SmartDashboard.putNumber("(Mock)", this.getEncoderPositionDeg());
+    // @Override
+    // public void run() {
+    // while (this.getEncoderPositionDeg() < MAX_DOWN_DEG) {
+    // SmartDashboard.putNumber("(Mock)", this.getEncoderPositionDeg());
 
-                    kRaiseTalonFx$$set(.2);
-                    // ^^ kRaiseTalonFX.set(.2);
+    // kRaiseTalonFx$$set(.2);
+    // // ^^ kRaiseTalonFX.set(.2);
 
-                }
+    // }
 
-                kRaiseTalonFx$$set(0);
-                // ^^ kRaiseTalonFX.set(0);
+    // kRaiseTalonFx$$set(0);
+    // // ^^ kRaiseTalonFX.set(0);
 
-                this.toggleEncoderLimiting();
-            }
-        });/*
-            * () -> {
-            * while (getEncoderPositionDeg() < MAX_DOWN_DEG) {
-            * // kRaiseTalonFX.set(.2);
-            * }
-            * 
-            * // kRaiseTalonFX.set(0);
-            * toggleEncoderLimiting();
-            * 
-            * });
-            */
-    }
+    // this.toggleEncoderLimiting();
+    // }
+    // });
+    /*
+     * () -> {
+     * while (getEncoderPositionDeg() < MAX_DOWN_DEG) {
+     * // kRaiseTalonFX.set(.2);
+     * }
+     * 
+     * // kRaiseTalonFX.set(0);
+     * toggleEncoderLimiting();
+     * 
+     * });
+     */
+    // }
 
     /**
      * Command to be used in the SmartDashboard.
@@ -173,22 +182,23 @@ public class ArmSubsystem extends SubsystemBase {
      * <li>When the arm is not telescoped</li>
      * </ol>
      */
-    public Command zeroTheCounter() {
-        return Commands.runOnce(() -> this.kRaiseTalonFX.setSelectedSensorPosition(0));
-    }
+    // public Command zeroTheCounter() {
+    // return Commands.runOnce(() ->
+    // this.kRaiseTalonFX.setSelectedSensorPosition(0));
+    // }
 
-    public Command toggleEncoderLimiting() {
-        return Commands.runOnce(() -> willRateLimit = !willRateLimit);
-    }
+    // public Command toggleEncoderLimiting() {
+    // return Commands.runOnce(() -> willRateLimit = !willRateLimit);
+    // }
 
-    public boolean isRateLimiting() {
-        return willRateLimit;
-    }
+    // public boolean isRateLimiting() {
+    // return willRateLimit;
+    // }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm Angle", this.getEncoderPositionDeg());
-        SmartDashboard.putBoolean("Arm Limits", this.isRateLimiting());
+        // SmartDashboard.putBoolean("Arm Limits", this.isRateLimiting());
     }
 
     public Command moveCmd(DoubleSupplier input) {

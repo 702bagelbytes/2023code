@@ -13,8 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AutoBalanceCommand;
-import frc.robot.commands.AutoScoreCommand;
+import frc.robot.commands.ArmPIDCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
 import frc.robot.subsystems.AHRSSubsystem;
@@ -28,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ArmPIDCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -57,8 +57,10 @@ public class RobotContainer {
                 // Configure the button bindings
                 configureButtonBindings();
 
-                SmartDashboard.putData("Zero Arm Angle", (Sendable) armSubsystem.zeroTheCounter());
-                SmartDashboard.putData("Toggle Arm Limits", (Sendable) armSubsystem.toggleEncoderLimiting());
+                // SmartDashboard.putData("Zero Arm Angle", (Sendable)
+                // armSubsystem.zeroTheCounter());
+                // SmartDashboard.putData("Toggle Arm Limits", (Sendable)
+                // armSubsystem.toggleEncoderLimiting());
                 // SmartDashboard.putData("Up To Zone", (Sendable)
                 // armSubsystem.raiseArmToZone());
         }
@@ -86,6 +88,7 @@ public class RobotContainer {
                 armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
                 coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
+                coDriverController.povDown().whileTrue(armSubsystem.resetEncodersCommand());
                 coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
                 turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
         }
@@ -96,14 +99,14 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                // return Commands.runOnce(() -> {
+
+                return new ArmPIDCommand(armSubsystem, 20);
                 // float initialAngle = ahrsSubsystem.getBalanceAngle();
-                // driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
-                // .andThen(new WaitCommand(.2))
+                // return driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
+                // .andThen(new WaitCommand(2))
                 // .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
-                // initialAngle))
-                // .schedule();
-                // });
-                return null;
+                // initialAngle));
+
         }
+
 }
