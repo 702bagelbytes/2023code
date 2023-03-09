@@ -18,6 +18,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -40,21 +41,26 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX talonML = new WPI_TalonSRX(DriveConstants.TALON_ML_ID);
     private final WPI_TalonSRX talonBL = new WPI_TalonSRX(DriveConstants.TALON_BL_ID);
     private final MotorControllerGroup leftGroup = new MotorControllerGroup(sparkFL, talonML, talonBL);
-    private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
-    private Pose2d pose = new Pose2d();
+    // private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
+    DifferentialDriveOdometry m_odometry;
+    private final Supplier<Rotation2d> getRotation2d;
+
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(20));
+
+    private Pose2d pose = new Pose2d();
 
     private final CANSparkMax sparkFR = new CANSparkMax(DriveConstants.SPARK_FR_ID, MotorType.kBrushed);
     private final RelativeEncoder rightEncoder = sparkFR.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
     private final WPI_TalonSRX talonMR = new WPI_TalonSRX(DriveConstants.TALON_MR_ID);
     private final WPI_TalonSRX talonBR = new WPI_TalonSRX(DriveConstants.TALON_BR_ID);
     private final MotorControllerGroup rightGroup = new MotorControllerGroup(sparkFR, talonMR, talonBR);
-    DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-            ahrsSubsystem.getRotation2d(), this.getLeftDistance(), this.getRightDistance());
-
     private final DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
 
-    public DriveSubsystem() {
+    public DriveSubsystem(Supplier<Rotation2d> getRotation2d) {
+        this.getRotation2d = getRotation2d;
+        this.m_odometry = new DifferentialDriveOdometry(
+                getRotation2d.get(), this.getLeftDistance(), this.getRightDistance());
+
         sparkFL.setInverted(true);
         sparkFR.setInverted(true);
         leftGroup.setInverted(true);
@@ -164,7 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putString("Drive Encoders",
                 String.format("L: %.2f, R: %.2f", leftEncoder.getPosition(), rightEncoder.getPosition()));
-        var gyroAngle = ahrsSubsystem.getRotation2d();
+        var gyroAngle = getRotation2d.get();
 
         // Update the pose
         pose = m_odometry.update(gyroAngle,

@@ -39,8 +39,8 @@ import frc.robot.commands.ArmPIDCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-        private final DriveSubsystem driveSubsystem = new DriveSubsystem();
         private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
+        private final DriveSubsystem driveSubsystem = new DriveSubsystem(() -> ahrsSubsystem.getRotation2d());
         private final TurretSubsystem turretSubsystem = new TurretSubsystem();
         private final GRABOTRONSubsystem grabotronSubsystem = new GRABOTRONSubsystem();
         private final TelescopeSubsystem telescopeSubsystem = new TelescopeSubsystem();
