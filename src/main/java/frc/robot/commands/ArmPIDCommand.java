@@ -7,18 +7,12 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmPIDCommand extends CommandBase {
   ArmSubsystem armSubsystem;
-  PIDController ArmPIDController = new PIDController(0.08, 0, 0);
+  PIDController ArmPIDController = new PIDController(0.07, 0.001, 0);
 
   public ArmPIDCommand(ArmSubsystem armSubsystem, double setpoint) {
     this.armSubsystem = armSubsystem;
     ArmPIDController.setSetpoint(setpoint);
-    ArmPIDController.setTolerance(4);
-  }
-
-  @Override
-  public void initialize() {
-    armSubsystem.resetEncoders();
-
+    ArmPIDController.setTolerance(1);
   }
 
   @Override
@@ -27,5 +21,9 @@ public class ArmPIDCommand extends CommandBase {
     double speed = ArmPIDController.calculate(armSubsystem.getEncoderPositionDeg());
     armSubsystem.set(speed);
 
+  }
+
+  public boolean isFinished() {
+    return ArmPIDController.atSetpoint();
   }
 }

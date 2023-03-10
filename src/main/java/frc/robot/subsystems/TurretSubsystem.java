@@ -14,7 +14,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
-    private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TurretConstants.kTurretTalonFX);
+    private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TurretConstants.TURRET_ID);
     SlewRateLimiter rateLimiter = new SlewRateLimiter(0.5, -0.5, 0.0);
     LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
     // // private final Encoder encoder = new Encoder(0, 0);

@@ -17,6 +17,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -42,6 +43,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX talonBL = new WPI_TalonSRX(DriveConstants.TALON_BL_ID);
     private final MotorControllerGroup leftGroup = new MotorControllerGroup(sparkFL, talonML, talonBL);
     // private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
+    private final SlewRateLimiter limiter = new SlewRateLimiter(5, -5, 0.1);
     DifferentialDriveOdometry m_odometry;
     private final Supplier<Rotation2d> getRotation2d;
 
@@ -113,7 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
         leftSpeed = clampSpeed(leftSpeed);
         rightSpeed = clampSpeed(rightSpeed);
         SmartDashboard.putString("Speed", String.format("L: %.2f, R: %.2f}", leftSpeed, rightSpeed));
-        drive.tankDrive(leftSpeed, rightSpeed);
+        drive.tankDrive(limiter.calculate(leftSpeed), limiter.calculate(rightSpeed));
     }
 
     public Command tankDriveCmd(Supplier<Double> leftSpeedSupplier, Supplier<Double> rightSpeedSupplier) {

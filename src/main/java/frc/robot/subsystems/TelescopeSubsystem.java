@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TelescopeConstants;
 
 public class TelescopeSubsystem extends SubsystemBase {
-    private final WPI_TalonFX extensionTalon = new WPI_TalonFX(TelescopeConstants.kExtensionTalonFX);
+    private final WPI_TalonFX extensionTalon = new WPI_TalonFX(TelescopeConstants.EXTENSION_TALON_ID);
     /**
      * At least that's what Adam said...
      */
@@ -24,7 +24,6 @@ public class TelescopeSubsystem extends SubsystemBase {
     SlewRateLimiter limiter = new SlewRateLimiter(1.0, -1.0, 0.0);
 
     public TelescopeSubsystem() {
-        extensionTalon.setSelectedSensorPosition(0); // reset the encoder
         extensionTalon.setNeutralMode(NeutralMode.Brake);
 
     }
@@ -44,6 +43,10 @@ public class TelescopeSubsystem extends SubsystemBase {
      */
     public double getEncoderPosition() {
         return extensionTalon.getSelectedSensorPosition() / 2048d / TelescopeSubsystem.GEARBOX_RATIO;
+    }
+
+    public Command resetEncodersCommand() {
+        return this.runOnce(() -> resetEncoders());
     }
 
     public Command moveCmd(DoubleSupplier input) {

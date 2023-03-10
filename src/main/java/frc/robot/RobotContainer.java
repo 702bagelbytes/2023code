@@ -16,6 +16,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmPIDCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
+import frc.robot.commands.TelescopePIDCommand;
 import frc.robot.subsystems.AHRSSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -88,7 +89,8 @@ public class RobotContainer {
                 armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
                 coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
-                coDriverController.povDown().whileTrue(armSubsystem.resetEncodersCommand());
+                coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
+                coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());
                 coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
                 turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
         }
@@ -100,7 +102,13 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
 
-                return new ArmPIDCommand(armSubsystem, 20);
+                return armSubsystem.resetEncodersCommand()
+                                .andThen(telescopeSubsystem.resetEncodersCommand())
+                                .andThen(new ArmPIDCommand(armSubsystem, 16))
+                                .andThen(new ArmPIDCommand(armSubsystem, 10))
+                                .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6))
+                                .andThen(grabotronSubsystem.toggleCommand());
+                // .andThen(grabotronSubsystem.toggleCommand());
                 // float initialAngle = ahrsSubsystem.getBalanceAngle();
                 // return driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
                 // .andThen(new WaitCommand(2))

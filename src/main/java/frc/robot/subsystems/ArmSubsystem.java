@@ -6,28 +6,24 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
-    private final WPI_TalonFX kRaiseTalonFX = new WPI_TalonFX(Constants.ArmConstants.kRaiseTalonFX);
+    private final WPI_TalonFX armTalonFX = new WPI_TalonFX(Constants.ArmConstants.ARM_TALON_ID);
     private final SlewRateLimiter rateLimiter = new SlewRateLimiter(4.0);
 
     public ArmSubsystem() {
-        kRaiseTalonFX.setNeutralMode(NeutralMode.Brake);
-        kRaiseTalonFX.setSelectedSensorPosition(0);
-        kRaiseTalonFX.configReverseSoftLimitThreshold(MAX_DOWN_DEG);
-        kRaiseTalonFX.configForwardSoftLimitThreshold(MAX_UP_DEG);
-        kRaiseTalonFX.configReverseSoftLimitEnable(REVERSE_LIMIT_TOGGLE);
-        kRaiseTalonFX.configForwardSoftLimitEnable(FORWARD_LIMIT_TOGGLE);
+        armTalonFX.setNeutralMode(NeutralMode.Brake);
+        armTalonFX.configForwardSoftLimitThreshold(Constants.ArmConstants.MAX_UP_DEG);
+        armTalonFX.configForwardSoftLimitEnable(Constants.ArmConstants.FORWARD_LIMIT_TOGGLE);
 
     }
 
     public void resetEncoders() {
-        kRaiseTalonFX.setSelectedSensorPosition(0);
+        armTalonFX.setSelectedSensorPosition(0);
     }
 
     public Command resetEncodersCommand() {
@@ -35,28 +31,12 @@ public class ArmSubsystem extends SubsystemBase {
         return this.runOnce(() -> resetEncoders());
     }
 
-    // 1 / cpr / gear ratio
-    final static double BASE = 1;
-    final static double PULSES_PER_REVOLUTION = 2048;
-    final static double GEARBOX_RATIO = 48;
-    final static double SMALL_COG_TO_BIG_COG_1 = 4;
-    final static double BIG_COG_TO_BIG_COG_2 = 4;
-    final static double DEGREES_IN_A_CIRCLE = 360;
-
-    // this must be measured with an Angle Gauge
-    final static double ANGLE_TO_ZERO = -72.5;
-
     public double getEncoderPositionDeg() {
 
-        return degFromTicks(kRaiseTalonFX.getSelectedSensorPosition());
+        return degFromTicks(armTalonFX.getSelectedSensorPosition());
     }
 
     // private boolean willRateLimit = false;
-
-    public static final double MAX_UP_DEG = 15;
-    public static final double MAX_DOWN_DEG = -70;
-    public static final boolean REVERSE_LIMIT_TOGGLE = false;
-    public static final boolean FORWARD_LIMIT_TOGGLE = false;
 
     /**
      * Set the speed of the motor. In other words, move it!
@@ -75,30 +55,30 @@ public class ArmSubsystem extends SubsystemBase {
         // }
         // }
 
-        kRaiseTalonFX.set(calculated);
+        armTalonFX.set(calculated);
 
     }
 
     public static double degFromTicks(double ticks) {
         return ticks
-                / BASE
-                / PULSES_PER_REVOLUTION
-                / GEARBOX_RATIO
-                / SMALL_COG_TO_BIG_COG_1
-                / BIG_COG_TO_BIG_COG_2
-                * DEGREES_IN_A_CIRCLE
-                + ANGLE_TO_ZERO;
+                / Constants.EncoderConstants.BASE
+                / Constants.EncoderConstants.PULSES_PER_REVOLUTION
+                / Constants.EncoderConstants.GEARBOX_RATIO
+                / Constants.EncoderConstants.SMALL_COG_TO_BIG_COG_1
+                / Constants.EncoderConstants.BIG_COG_TO_BIG_COG_2
+                * Constants.EncoderConstants.DEGREES_IN_A_CIRCLE
+                + Constants.EncoderConstants.ANGLE_TO_ZERO;
     }
 
     public static double ticksFromDeg(double deg) {
         return (deg
-                - ANGLE_TO_ZERO)
-                / DEGREES_IN_A_CIRCLE
-                * PULSES_PER_REVOLUTION
-                * BIG_COG_TO_BIG_COG_2
-                * SMALL_COG_TO_BIG_COG_1
-                * GEARBOX_RATIO
-                * BASE;
+                - Constants.EncoderConstants.ANGLE_TO_ZERO)
+                / Constants.EncoderConstants.DEGREES_IN_A_CIRCLE
+                * Constants.EncoderConstants.PULSES_PER_REVOLUTION
+                * Constants.EncoderConstants.BIG_COG_TO_BIG_COG_2
+                * Constants.EncoderConstants.SMALL_COG_TO_BIG_COG_1
+                * Constants.EncoderConstants.GEARBOX_RATIO
+                * Constants.EncoderConstants.BASE;
     }
 
     /**

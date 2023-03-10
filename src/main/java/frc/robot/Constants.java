@@ -62,19 +62,35 @@ public final class Constants {
   }
 
   public static class TurretConstants {
-    public static final int kTurretTalonFX = 32;
+    public static final int TURRET_ID = 32;
     public static final double kMaxOutput = 0.5;
   }
 
   public static class TelescopeConstants {
-    public static final int kExtensionTalonFX = 15;
+    public static final int EXTENSION_TALON_ID = 15;
     public static final double kTelescopeSpeed = 1.0;
   }
 
   public static class ArmConstants {
-    public static final int kRaiseTalonFX = 10;
+    public static final int ARM_TALON_ID = 10;
 
     public static final double kMaxArmOutput = 1.0;
+    public static final double MAX_UP_DEG = 21;
+    public static final boolean REVERSE_LIMIT_TOGGLE = false;
+    public static final boolean FORWARD_LIMIT_TOGGLE = false;
+  }
+
+  public static class EncoderConstants {
+    // 1 / cpr / gear ratio
+    public static double BASE = 1;
+    public static double PULSES_PER_REVOLUTION = 2048;
+    public static double GEARBOX_RATIO = 48;
+    public static double SMALL_COG_TO_BIG_COG_1 = 4;
+    public static double BIG_COG_TO_BIG_COG_2 = 4;
+    public static double DEGREES_IN_A_CIRCLE = 360;
+
+    // this must be measured with an Angle Gauge
+    public static double ANGLE_TO_ZERO = -72.5;
   }
 
   public static class GRABOTRONConstants {
