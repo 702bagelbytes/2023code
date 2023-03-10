@@ -12,7 +12,7 @@ public class ArmPIDCommand extends CommandBase {
   public ArmPIDCommand(ArmSubsystem armSubsystem, double setpoint) {
     this.armSubsystem = armSubsystem;
     ArmPIDController.setSetpoint(setpoint);
-    ArmPIDController.setTolerance(1);
+    ArmPIDController.setTolerance(4);
   }
 
   @Override
@@ -23,7 +23,14 @@ public class ArmPIDCommand extends CommandBase {
 
   }
 
+  @Override
   public boolean isFinished() {
     return ArmPIDController.atSetpoint();
+  }
+
+  @Override
+  public void end(boolean isInterrupted) {
+    armSubsystem.set(0);
+
   }
 }

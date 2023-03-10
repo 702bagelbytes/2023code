@@ -6,7 +6,7 @@ import frc.robot.subsystems.TelescopeSubsystem;
 
 public class TelescopePIDCommand extends CommandBase {
     TelescopeSubsystem telescopeSubsystem;
-    PIDController telescopePIDController = new PIDController(0.005, 0, 0);
+    PIDController telescopePIDController = new PIDController(0.5, 0, 0);
 
     public TelescopePIDCommand(TelescopeSubsystem telescopeSubsystem, double setpoint) {
         this.telescopeSubsystem = telescopeSubsystem;
@@ -20,7 +20,13 @@ public class TelescopePIDCommand extends CommandBase {
         telescopeSubsystem.set(speed);
     }
 
+    @Override
     public boolean isFinished() {
         return telescopePIDController.atSetpoint();
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+        telescopeSubsystem.set(0);
     }
 }

@@ -102,11 +102,12 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
 
-                return armSubsystem.resetEncodersCommand()
+                return new WaitCommand(1)
+                                .andThen(armSubsystem.resetEncodersCommand())
                                 .andThen(telescopeSubsystem.resetEncodersCommand())
                                 .andThen(new ArmPIDCommand(armSubsystem, 16))
-                                .andThen(new ArmPIDCommand(armSubsystem, 10))
                                 .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6))
+                                // .andThen(new ArmPIDCommand(armSubsystem, 10))
                                 .andThen(grabotronSubsystem.toggleCommand());
                 // .andThen(grabotronSubsystem.toggleCommand());
                 // float initialAngle = ahrsSubsystem.getBalanceAngle();
