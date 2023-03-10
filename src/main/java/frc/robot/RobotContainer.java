@@ -106,7 +106,8 @@ public class RobotContainer {
                                 .andThen(armSubsystem.resetEncodersCommand())
                                 .andThen(telescopeSubsystem.resetEncodersCommand())
                                 .andThen(new ArmPIDCommand(armSubsystem, 16))
-                                .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6))
+                                .andThen(new TelescopePIDCommand(telescopeSubsystem, 2.5)) // Score Mid
+                                // .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6)) // Score High
                                 // .andThen(new ArmPIDCommand(armSubsystem, 10))
                                 .andThen(grabotronSubsystem.toggleCommand());
                 // .andThen(grabotronSubsystem.toggleCommand());

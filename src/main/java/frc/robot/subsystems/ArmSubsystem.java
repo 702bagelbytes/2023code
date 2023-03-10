@@ -43,7 +43,7 @@ public class ArmSubsystem extends SubsystemBase {
      * Don't forget to call this method with zero to stop the motor.
      */
     public void set(double value) {
-        double calculated = rateLimiter.calculate(value * Constants.ArmConstants.kMaxArmOutput);
+        double calculated = value * Constants.ArmConstants.kMaxArmOutput;
 
         // if (willRateLimit) {
         // if (getEncoderPositionDeg() > MAX_UP_DEG && calculated > 0) {
