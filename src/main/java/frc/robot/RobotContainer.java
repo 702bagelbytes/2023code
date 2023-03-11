@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Robot.AutonomousChoices;
 import frc.robot.commands.ArmPIDCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
@@ -95,28 +96,42 @@ public class RobotContainer {
                 turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
         }
 
+        private final Command ARM_SCORE = new WaitCommand(1)
+                        .andThen(armSubsystem.resetEncodersCommand())
+                        .andThen(telescopeSubsystem.resetEncodersCommand())
+                        .andThen(new ArmPIDCommand(armSubsystem, 16))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 2.5)) // Score Mid
+                        // .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6)) // Score High
+                        // .andThen(new ArmPIDCommand(armSubsystem, 10))
+                        .andThen(grabotronSubsystem.toggleCommand());
+
+        private final Command BALANCE;
+        {
+                float initialAngle = ahrsSubsystem.getBalanceAngle();
+                this.BALANCE = driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
+                                .andThen(new WaitCommand(2))
+                                .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
+                                                initialAngle));
+        }
+
+        private final Command DEFAULT = Commands.runOnce(() -> {
+                System.out.println(":)");
+        });
+
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
          *
          * @return the command to run in autonomous
          */
-        public Command getAutonomousCommand() {
-
-                return new WaitCommand(1)
-                                .andThen(armSubsystem.resetEncodersCommand())
-                                .andThen(telescopeSubsystem.resetEncodersCommand())
-                                .andThen(new ArmPIDCommand(armSubsystem, 16))
-                                .andThen(new TelescopePIDCommand(telescopeSubsystem, 2.5)) // Score Mid
-                                // .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6)) // Score High
-                                // .andThen(new ArmPIDCommand(armSubsystem, 10))
-                                .andThen(grabotronSubsystem.toggleCommand());
-                // .andThen(grabotronSubsystem.toggleCommand());
-                // float initialAngle = ahrsSubsystem.getBalanceAngle();
-                // return driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
-                // .andThen(new WaitCommand(2))
-                // .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
-                // initialAngle));
-
+        public Command getAutonomousCommand(AutonomousChoices autoCode) {
+                switch (autoCode) {
+                        case ArmScore:
+                                return ARM_SCORE;
+                        case Balance:
+                                return BALANCE;
+                        default:
+                                return DEFAULT;
+                }
         }
 
 }

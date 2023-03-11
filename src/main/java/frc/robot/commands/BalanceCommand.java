@@ -27,7 +27,6 @@ public class BalanceCommand extends CommandBase {
         SmartDashboard.putData(controller);
         SmartDashboard.putNumber("Auto Speed", speed);
         driveSubsystem.tankDrive(speed, speed);
-
     }
 
     @Override

@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,6 +30,23 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  protected enum AutonomousChoices {
+    ArmScore("Arm Auto (beta)"),
+    Balance("Balance (beta)"),
+    Default("Default Command");
+
+    String label;
+    AutonomousChoices(String label) {
+      if (label == null || label.equals("")) {
+        this.label = "<NO LABEL>";
+      } else {
+        this.label = label;
+      }
+    }
+  }
+
+  private final SendableChooser<AutonomousChoices> chooser = new SendableChooser<>();
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -34,6 +54,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    chooser.setDefaultOption("Default Auto", AutonomousChoices.Default);
+
+    for (AutonomousChoices auto : AutonomousChoices.values()) {
+      chooser.addOption(auto.label, auto);
+    }
+
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
@@ -81,8 +107,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(chooser.getSelected());
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
