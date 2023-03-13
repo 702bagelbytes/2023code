@@ -35,22 +35,22 @@ public final class Constants {
     public static final int TALON_BR_ID = 27;
 
     public static final boolean LEFT_ENCODER_INVERTED = true;
-    public static final boolean RIGHT_ENCODER_INVERTED = false;
-
+    public static final boolean RIGHT_ENCODER_INVERTED = true;
+    public static final double ENCODER_OFFSET = 130;
     public static final double DRIVE_SPEED = 0.6;
     public static final double WHEEL_RADIUS_INCH = 4.0;
     public static final double INCH_TO_METER = 0.0254;
 
     public static class MotorFeed {
-      public static final double KS = 0.0;
-      public static final double KV = 0.0;
-      public static final double KA = 0.0;
+      public static final double KS = 0.05;
+      public static final double KV = 0.05;
+      public static final double KA = 0.03;
     }
 
     public static class Ramsete {
-      public static final double P = 0.0;
+      public static final double P = 0.5;
       public static final double I = 0.0;
-      public static final double D = 0.0;
+      public static final double D = 0.1;
 
     }
   }

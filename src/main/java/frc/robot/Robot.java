@@ -33,9 +33,13 @@ public class Robot extends TimedRobot {
   protected enum AutonomousChoices {
     ArmScore("Arm Auto (beta)"),
     Balance("Balance (beta)"),
-    Default("Default Command");
+    Default("Default Command"),
+    PathTest("Paths (beta)"),
+    PathTestBackwards("Path backwwards (beta)"),
+    Full("Full (beta)");
 
     String label;
+
     AutonomousChoices(String label) {
       if (label == null || label.equals("")) {
         this.label = "<NO LABEL>";
@@ -64,9 +68,13 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     UsbCamera camera = CameraServer.startAutomaticCapture();
-    camera.setResolution(680, 480);
+    camera.setResolution(240, 180);
 
     m_robotContainer = new RobotContainer();
+
+    SmartDashboard.putData("Auto Chooser", chooser);
+
+    m_robotContainer.resetDriveEncoders();
   }
 
   /**
@@ -108,7 +116,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand(chooser.getSelected());
-
+    m_robotContainer.resetDriveEncoders();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

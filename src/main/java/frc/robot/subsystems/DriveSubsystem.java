@@ -43,7 +43,8 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX talonBL = new WPI_TalonSRX(DriveConstants.TALON_BL_ID);
     private final MotorControllerGroup leftGroup = new MotorControllerGroup(sparkFL, talonML, talonBL);
     // private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
-    private final SlewRateLimiter limiter = new SlewRateLimiter(5, -5, 0.1);
+    private final SlewRateLimiter leftLimiter = new SlewRateLimiter(5, -5, 0.1);
+    private final SlewRateLimiter rightLimiter = new SlewRateLimiter(5, -5, 0.1);
     DifferentialDriveOdometry m_odometry;
     private final Supplier<Rotation2d> getRotation2d;
 
@@ -75,8 +76,10 @@ public class DriveSubsystem extends SubsystemBase {
         talonMR.setNeutralMode(NeutralMode.Brake);
         talonBR.setNeutralMode(NeutralMode.Brake);
 
-        // leftEncoder.setInverted(DriveConstants.LEFT_ENCODER_INVERTED);
-        // rightEncoder.setInverted(DriveConstants.RIGHT_ENCODER_INVERTED);
+        leftEncoder.setInverted(DriveConstants.LEFT_ENCODER_INVERTED);
+        rightEncoder.setInverted(DriveConstants.RIGHT_ENCODER_INVERTED);
+
+        resetEncoders();
 
         drive.setMaxOutput(DriveConstants.DRIVE_SPEED);
     }
@@ -84,13 +87,13 @@ public class DriveSubsystem extends SubsystemBase {
     public double getRightDistance() {
         double wheelRadiusMeter = inchToMeter(DriveConstants.WHEEL_RADIUS_INCH);
         double circumference = 2 * wheelRadiusMeter * Math.PI;
-        return rightEncoder.getPosition() * circumference;
+        return (rightEncoder.getPosition() - DriveConstants.ENCODER_OFFSET) * circumference;
     }
 
     public double getLeftDistance() {
         double wheelRadiusMeter = inchToMeter(DriveConstants.WHEEL_RADIUS_INCH);
         double circumference = 2 * wheelRadiusMeter * Math.PI;
-        return leftEncoder.getPosition() * circumference;
+        return (leftEncoder.getPosition() - DriveConstants.ENCODER_OFFSET) * circumference;
     }
 
     public double clampSpeed(double speed) {
@@ -112,10 +115,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
-        leftSpeed = clampSpeed(leftSpeed);
-        rightSpeed = clampSpeed(rightSpeed);
+        leftSpeed = leftLimiter.calculate(clampSpeed(leftSpeed));
+        rightSpeed = rightLimiter.calculate(clampSpeed(rightSpeed));
         SmartDashboard.putString("Speed", String.format("L: %.2f, R: %.2f}", leftSpeed, rightSpeed));
-        drive.tankDrive(limiter.calculate(leftSpeed), limiter.calculate(rightSpeed));
+        drive.tankDrive(leftSpeed, rightSpeed);
     }
 
     public Command tankDriveCmd(Supplier<Double> leftSpeedSupplier, Supplier<Double> rightSpeedSupplier) {
@@ -138,12 +141,22 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
+    public void outputVoltsNegative(double left, double right) {
+        SmartDashboard.putNumber("left volts", -left);
+        SmartDashboard.putNumber("right volts", -right);
+        this.leftGroup.setVoltage(-left);
+        this.rightGroup.setVoltage(-right);
+    }
+
     public void outputVolts(double left, double right) {
+        SmartDashboard.putNumber("left volts", left);
+        SmartDashboard.putNumber("right volts", right);
         this.leftGroup.setVoltage(left);
         this.rightGroup.setVoltage(right);
     }
 
-    public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+    public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath,
+            boolean negativeOutputVolts) {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
                     // Reset odometry for the first path you run during auto
@@ -160,7 +173,7 @@ public class DriveSubsystem extends SubsystemBase {
                         this::getWheelSpeeds,
                         new PIDController(Ramsete.P, Ramsete.I, Ramsete.D),
                         new PIDController(Ramsete.P, Ramsete.I, Ramsete.D),
-                        this::outputVolts,
+                        negativeOutputVolts ? this::outputVoltsNegative : this::outputVolts,
                         this));
     }
 
@@ -178,6 +191,8 @@ public class DriveSubsystem extends SubsystemBase {
         pose = m_odometry.update(gyroAngle,
                 this.getLeftDistance(),
                 this.getRightDistance());
+        SmartDashboard.putNumber("Left distance", getLeftDistance());
+        SmartDashboard.putNumber("Right distance", getLeftDistance());
     }
 
     public double getLeftEncoderValue() {
@@ -189,7 +204,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void resetEncoders() {
-        leftEncoder.setPosition(0);
-        rightEncoder.setPosition(0);
+        leftEncoder.setPosition(DriveConstants.ENCODER_OFFSET);
+        rightEncoder.setPosition(DriveConstants.ENCODER_OFFSET);
     }
 }

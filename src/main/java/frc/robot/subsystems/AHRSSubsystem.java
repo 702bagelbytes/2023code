@@ -5,10 +5,10 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.I2C;
 
 public class AHRSSubsystem extends SubsystemBase {
-    private final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
+    private final AHRS ahrs = new AHRS(I2C.Port.kMXP);
 
     public AHRSSubsystem() {
     }
@@ -24,7 +24,7 @@ public class AHRSSubsystem extends SubsystemBase {
 
     public float getBalanceAngle() {
         // "taking off" should translate to a positive angle being returned from the
-        return -ahrs.getYaw();
+        return ahrs.getPitch();
     }
 
     @Override

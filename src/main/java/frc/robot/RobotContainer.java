@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import java.lang.Math;
 import edu.wpi.first.util.sendable.Sendable;
@@ -96,6 +98,10 @@ public class RobotContainer {
                 turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
         }
 
+        public void resetDriveEncoders() {
+                this.driveSubsystem.resetEncoders();
+        }
+
         private final Command ARM_SCORE = new WaitCommand(1)
                         .andThen(armSubsystem.resetEncodersCommand())
                         .andThen(telescopeSubsystem.resetEncodersCommand())
@@ -107,15 +113,15 @@ public class RobotContainer {
 
         private final Command BALANCE;
         {
-                float initialAngle = ahrsSubsystem.getBalanceAngle();
-                this.BALANCE = driveSubsystem.tankDriveCmd(() -> 0.75, () -> 0.75).withTimeout(2)
-                                .andThen(new WaitCommand(2))
-                                .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
-                                                initialAngle));
+
+                this.BALANCE = new EncoderDriveCommand(driveSubsystem, -2.5)
+                                .andThen(new WaitCommand(1));
+
         }
 
         private final Command DEFAULT = Commands.runOnce(() -> {
                 System.out.println(":)");
+
         });
 
         /**
@@ -124,11 +130,31 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand(AutonomousChoices autoCode) {
+                float initialAngle = ahrsSubsystem.getBalanceAngle();
                 switch (autoCode) {
                         case ArmScore:
                                 return ARM_SCORE;
                         case Balance:
                                 return BALANCE;
+
+                        case Full:
+
+                                return ARM_SCORE.andThen(
+                                                BALANCE).andThen(
+                                                                new BalanceCommand(driveSubsystem,
+                                                                                ahrsSubsystem::getBalanceAngle,
+                                                                                initialAngle));
+
+                        case PathTest:
+                                PathPlannerTrajectory examplePath = PathPlanner.loadPath("DriveStraight",
+                                                new PathConstraints(1, .5));
+
+                                return driveSubsystem.followTrajectoryCommand(examplePath, true, false);
+                        case PathTestBackwards:
+                                PathPlannerTrajectory examplePath2 = PathPlanner.loadPath("DriveBackwards",
+                                                new PathConstraints(1, .5), true);
+
+                                return driveSubsystem.followTrajectoryCommand(examplePath2, true, true);
                         default:
                                 return DEFAULT;
                 }

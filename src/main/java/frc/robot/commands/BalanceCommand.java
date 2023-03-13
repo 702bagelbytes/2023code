@@ -26,7 +26,7 @@ public class BalanceCommand extends CommandBase {
         double speed = driveSubsystem.chargeStationClampSpeed(controller.calculate(balanceAngleSupplier.get()));
         SmartDashboard.putData(controller);
         SmartDashboard.putNumber("Auto Speed", speed);
-        driveSubsystem.tankDrive(speed, speed);
+        driveSubsystem.tankDrive(-speed, -speed);
     }
 
     @Override
