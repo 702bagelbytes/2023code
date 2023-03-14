@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.Optional;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
@@ -115,6 +117,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_robotContainer.setArmBrakeMode(NeutralMode.Brake);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand(chooser.getSelected());
     m_robotContainer.resetDriveEncoders();
     // schedule the autonomous command (example)
@@ -137,6 +140,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.setArmBrakeMode(NeutralMode.Coast);
   }
 
   /** This function is called periodically during operator control. */

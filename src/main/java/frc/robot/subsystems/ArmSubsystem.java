@@ -16,10 +16,13 @@ public class ArmSubsystem extends SubsystemBase {
     private final SlewRateLimiter rateLimiter = new SlewRateLimiter(4.0);
 
     public ArmSubsystem() {
-        armTalonFX.setNeutralMode(NeutralMode.Brake);
         armTalonFX.configForwardSoftLimitThreshold(Constants.ArmConstants.MAX_UP_DEG);
         armTalonFX.configForwardSoftLimitEnable(Constants.ArmConstants.FORWARD_LIMIT_TOGGLE);
 
+    }
+
+    public void setBrakeMode(NeutralMode newMode) {
+        armTalonFX.setNeutralMode(newMode);
     }
 
     public void resetEncoders() {

@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -102,6 +103,10 @@ public class RobotContainer {
                 this.driveSubsystem.resetEncoders();
         }
 
+        public void setArmBrakeMode(NeutralMode newMode) {
+                this.armSubsystem.setBrakeMode(newMode);
+        }
+
         private final Command ARM_SCORE = new WaitCommand(1)
                         .andThen(armSubsystem.resetEncodersCommand())
                         .andThen(telescopeSubsystem.resetEncodersCommand())
@@ -114,7 +119,7 @@ public class RobotContainer {
         private final Command BALANCE;
         {
 
-                this.BALANCE = new EncoderDriveCommand(driveSubsystem, -2.5)
+                this.BALANCE = new EncoderDriveCommand(driveSubsystem, -3.3)
                                 .andThen(new WaitCommand(1));
 
         }

@@ -43,8 +43,8 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX talonBL = new WPI_TalonSRX(DriveConstants.TALON_BL_ID);
     private final MotorControllerGroup leftGroup = new MotorControllerGroup(sparkFL, talonML, talonBL);
     // private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
-    private final SlewRateLimiter leftLimiter = new SlewRateLimiter(5, -5, 0.1);
-    private final SlewRateLimiter rightLimiter = new SlewRateLimiter(5, -5, 0.1);
+    private final SlewRateLimiter leftLimiter = new SlewRateLimiter(4);
+    private final SlewRateLimiter rightLimiter = new SlewRateLimiter(4);
     DifferentialDriveOdometry m_odometry;
     private final Supplier<Rotation2d> getRotation2d;
 
@@ -101,8 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
         if (Math.abs(speed) <= 0.05) {
             return 0;
         }
-        double minSpeed = 0.2;
-        return Math.copySign(minSpeed, speed) + (1 - minSpeed) * speed;
+        return speed;
     }
 
     public double chargeStationClampSpeed(double speed) {
@@ -115,8 +114,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
-        leftSpeed = leftLimiter.calculate(clampSpeed(leftSpeed));
-        rightSpeed = rightLimiter.calculate(clampSpeed(rightSpeed));
+        // leftSpeed = leftLimiter.calculate(clampSpeed(leftSpeed));
+        leftSpeed = clampSpeed(leftSpeed);
+        // rightSpeed = rightLimiter.calculate(clampSpeed(rightSpeed));
+        rightSpeed = clampSpeed(rightSpeed);
         SmartDashboard.putString("Speed", String.format("L: %.2f, R: %.2f}", leftSpeed, rightSpeed));
         drive.tankDrive(leftSpeed, rightSpeed);
     }
