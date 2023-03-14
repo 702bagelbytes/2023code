@@ -91,8 +91,8 @@ public class RobotContainer {
                 armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
                 coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
-                coDriverController.b().whileTrue(ArmPIDCommand(armSubsystem, 18));
-                coDriverController.x().whileTrue(TelescopePIDCommand(telescopeSubsystem, 0.2));
+                coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 18));
+                coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.1));
                 coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
                 coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());
                 coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
