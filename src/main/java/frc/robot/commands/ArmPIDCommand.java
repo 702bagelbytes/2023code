@@ -8,13 +8,14 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmPIDCommand extends CommandBase {
   ArmSubsystem armSubsystem;
-  PIDController ArmPIDController = new PIDController(0.07, 0.001, 0);
+  PIDController ArmPIDController = new PIDController(0.08, 0.0, 0.01);
 
   public ArmPIDCommand(ArmSubsystem armSubsystem, double setpoint) {
     this.armSubsystem = armSubsystem;
     ArmPIDController.setSetpoint(setpoint);
     ArmPIDController.setTolerance(4);
-    SmartDashboard.putBoolean("Arm Subsystem", false);
+    addRequirements(armSubsystem);
+   
   }
 
   @Override
@@ -37,7 +38,6 @@ public class ArmPIDCommand extends CommandBase {
   @Override
   public void end(boolean isInterrupted) {
     armSubsystem.set(0);
-    SmartDashboard.putBoolean("Arm Subsystem", true);
 
   }
 }

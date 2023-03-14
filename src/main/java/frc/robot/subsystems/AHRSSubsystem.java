@@ -24,7 +24,7 @@ public class AHRSSubsystem extends SubsystemBase {
 
     public float getBalanceAngle() {
         // "taking off" should translate to a positive angle being returned from the
-        return ahrs.getPitch();
+        return -ahrs.getPitch();
     }
 
     @Override

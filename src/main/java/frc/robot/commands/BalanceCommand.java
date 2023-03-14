@@ -23,7 +23,11 @@ public class BalanceCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double speed = driveSubsystem.chargeStationClampSpeed(controller.calculate(balanceAngleSupplier.get()));
+
+        if (!controller.atSetpoint()) {
+        double speed = controller.calculate(balanceAngleSupplier.get());
+        }
+        speed = MathUtil.clamp(speed, -0.5, 0.5)
         SmartDashboard.putData(controller);
         SmartDashboard.putNumber("Auto Speed", speed);
         driveSubsystem.tankDrive(-speed, -speed);

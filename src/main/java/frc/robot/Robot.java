@@ -37,8 +37,9 @@ public class Robot extends TimedRobot {
     Balance("Balance (beta)"),
     Default("Default Command"),
     PathTest("Paths (beta)"),
-    PathTestBackwards("Path backwwards (beta)"),
+    PathTestBackwards("Path backwards (beta)"),
     Full("Full (beta)");
+    ScoreMidAndBackOut("Score and back out (beta)");
 
     String label;
 

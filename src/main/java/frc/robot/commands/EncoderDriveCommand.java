@@ -42,13 +42,6 @@ public class EncoderDriveCommand extends CommandBase {
         if (!rightController.atSetpoint()) {
             rightSpeed = rightController.calculate(driveSubsystem.getRightDistance());
         }
-        // if (driveSubsystem.getLeftDistance() - driveSubsystem.getRightDistance() >
-        // 0.2) {
-        // leftSpeed = leftSpeed * .9;
-        // } else if (driveSubsystem.getLeftDistance() -
-        // driveSubsystem.getRightDistance() < -0.2) {
-        // rightSpeed = rightSpeed * .9;
-        // }
         driveSubsystem.tankDrive(leftSpeed, rightSpeed);
     }
 
