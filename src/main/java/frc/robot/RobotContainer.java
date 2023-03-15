@@ -92,7 +92,7 @@ public class RobotContainer {
                 coDriverController.povUp().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.povRight().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
                 coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 0));
-                coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.1));
+                coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.05));
                 coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
                 coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());
                 coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
@@ -115,15 +115,13 @@ public class RobotContainer {
                 this.armSubsystem.setBrakeMode(newMode);
         }
 
-        private final Command SCORE_MID = armSubsystem.resetEncodersCommand()
-                        .andThen(telescopeSubsystem.resetEncodersCommand())
-                        .andThen(new ArmPIDCommand(armSubsystem, 16))
+        private final Command SCORE_MID = new ArmPIDCommand(armSubsystem, 16)
                         .andThen(new TelescopePIDCommand(telescopeSubsystem, 2.5)) // Score Mid
                         // .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6)) // Score High
                         .andThen(grabotronSubsystem.toggleCommand())
                         .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1))
-                        .andThen(new ArmPIDCommand(armSubsystem, -65))
-                        .andThen(grabotronSubsystem.toggleCommand()); // change to be parallel with previous action
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new ArmPIDCommand(armSubsystem, -65));
 
         private final Command BALANCE;
         {
@@ -133,7 +131,7 @@ public class RobotContainer {
 
         }
 
-        private final Command SCORE_MID_BACK_OUT = SCORE_MID.andThen(new EncoderDriveCommand(driveSubsystem, -5));
+        private final Command SCORE_MID_BACK_OUT = SCORE_MID.andThen(new EncoderDriveCommand(driveSubsystem, -3));
 
         private final Command DEFAULT = Commands.runOnce(() -> {
                 System.out.println(":)");
@@ -146,7 +144,7 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand(AutonomousChoices autoCode) {
-                float initialAngle = 0;
+                float initialAngle = ahrsSubsystem.getBalanceAngle();
                 switch (autoCode) {
                         case ArmScore:
                                 return SCORE_MID;

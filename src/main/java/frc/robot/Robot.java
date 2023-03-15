@@ -120,9 +120,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(chooser.getSelected());
     m_robotContainer.setArmBrakeMode(NeutralMode.Brake);
     m_robotContainer.resetGyro();
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand(chooser.getSelected());
     m_robotContainer.resetDriveEncoders();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
