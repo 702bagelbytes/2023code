@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -24,10 +25,9 @@ public class BalanceCommand extends CommandBase {
     @Override
     public void execute() {
 
-        if (!controller.atSetpoint()) {
         double speed = controller.calculate(balanceAngleSupplier.get());
-        }
-        speed = MathUtil.clamp(speed, -0.5, 0.5)
+
+        speed = MathUtil.clamp(speed, -0.5, 0.5);
         SmartDashboard.putData(controller);
         SmartDashboard.putNumber("Auto Speed", speed);
         driveSubsystem.tankDrive(-speed, -speed);

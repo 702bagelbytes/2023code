@@ -80,7 +80,7 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
                 // Driver
-             
+
                 driveSubsystem.setDefaultCommand(driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(),
                                 () -> -driverController.getRightY()));
                 // driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
@@ -89,14 +89,22 @@ public class RobotContainer {
 
                 // Co-Driver
                 armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
-                coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
-                coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
-                coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 18));
+                coDriverController.povUp().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
+                coDriverController.povRight().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
+                coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 0));
                 coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.1));
                 coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
                 coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());
                 coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
                 turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
+        }
+
+        public void resetGyro() {
+                this.ahrsSubsystem.resetGyro();
+        }
+
+        public void calibrateGyro() {
+                this.ahrsSubsystem.calibrateGyro();
         }
 
         public void resetDriveEncoders() {
@@ -107,8 +115,7 @@ public class RobotContainer {
                 this.armSubsystem.setBrakeMode(newMode);
         }
 
-        private final Command ARM_SCORE = 
-                        armSubsystem.resetEncodersCommand()
+        private final Command SCORE_MID = armSubsystem.resetEncodersCommand()
                         .andThen(telescopeSubsystem.resetEncodersCommand())
                         .andThen(new ArmPIDCommand(armSubsystem, 16))
                         .andThen(new TelescopePIDCommand(telescopeSubsystem, 2.5)) // Score Mid
@@ -116,7 +123,7 @@ public class RobotContainer {
                         .andThen(grabotronSubsystem.toggleCommand())
                         .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1))
                         .andThen(new ArmPIDCommand(armSubsystem, -65))
-                        .andThen(grabotronSubsystem.toggleCommand()); //change to be parallel with previous action 
+                        .andThen(grabotronSubsystem.toggleCommand()); // change to be parallel with previous action
 
         private final Command BALANCE;
         {
@@ -126,8 +133,7 @@ public class RobotContainer {
 
         }
 
-        private final Command SCORE_MID_BACK_OUT = 
-                ARM_SCORE.andThen(new EncoderDriveCommand(driveSubsystem, -5));
+        private final Command SCORE_MID_BACK_OUT = SCORE_MID.andThen(new EncoderDriveCommand(driveSubsystem, -5));
 
         private final Command DEFAULT = Commands.runOnce(() -> {
                 System.out.println(":)");
@@ -143,7 +149,7 @@ public class RobotContainer {
                 float initialAngle = 0;
                 switch (autoCode) {
                         case ArmScore:
-                                return ARM_SCORE;
+                                return SCORE_MID;
 
                         case Balance:
                                 return BALANCE;
@@ -153,9 +159,9 @@ public class RobotContainer {
 
                         case Full:
 
-                        return ARM_SCORE.andThen(BALANCE).andThen(new BalanceCommand(driveSubsystem,
-                                                                                ahrsSubsystem::getBalanceAngle,
-                                                                                initialAngle));
+                                return SCORE_MID.andThen(BALANCE).andThen(new BalanceCommand(driveSubsystem,
+                                                ahrsSubsystem::getBalanceAngle,
+                                                initialAngle));
 
                         case PathTest:
                                 PathPlannerTrajectory examplePath = PathPlanner.loadPath("DriveStraight",

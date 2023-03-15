@@ -37,9 +37,9 @@ public class Robot extends TimedRobot {
     Balance("Balance (beta)"),
     Default("Default Command"),
     PathTest("Paths (beta)"),
-    PathTestBackwards("Path backwards (beta)"),
-    Full("Full (beta)");
-    ScoreMidAndBackOut("Score and back out (beta)");
+    PathTestBackwards("Path backwwards (beta)"),
+    Full("Full (beta)"),
+    ScoreMidAndBackOut("Score Mid and Back out (beta)");
 
     String label;
 
@@ -78,6 +78,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto Chooser", chooser);
 
     m_robotContainer.resetDriveEncoders();
+
+    m_robotContainer.calibrateGyro();
   }
 
   /**
@@ -119,6 +121,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.setArmBrakeMode(NeutralMode.Brake);
+    m_robotContainer.resetGyro();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand(chooser.getSelected());
     m_robotContainer.resetDriveEncoders();
     // schedule the autonomous command (example)

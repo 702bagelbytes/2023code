@@ -19,9 +19,6 @@ public class ArmSubsystem extends SubsystemBase {
         armTalonFX.configForwardSoftLimitEnable(Constants.ArmConstants.FORWARD_LIMIT_TOGGLE);
 
     }
-    public Encoder getEncoder() {
-        return encoder;
-    }
 
     public void setBrakeMode(NeutralMode newMode) {
         armTalonFX.setNeutralMode(newMode);
