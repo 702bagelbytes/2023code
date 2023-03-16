@@ -79,7 +79,6 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.resetDriveEncoders();
 
-    m_robotContainer.calibrateGyro();
   }
 
   /**

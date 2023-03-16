@@ -54,6 +54,7 @@ public class RobotContainer {
                         OperatorConstants.kDriverControllerPort);
         private final CommandXboxController coDriverController = new CommandXboxController(
                         OperatorConstants.kCoDriverControllerPort);
+        float initialAngle;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -123,15 +124,25 @@ public class RobotContainer {
                         .andThen(grabotronSubsystem.toggleCommand())
                         .andThen(new ArmPIDCommand(armSubsystem, -65));
 
-        private final Command BALANCE;
-        {
+        private final Command BALANCE = new EncoderDriveCommand(driveSubsystem, ahrsSubsystem, -2.4)
+                        .andThen(new BalanceCommand(driveSubsystem,
+                                        ahrsSubsystem::getBalanceAngle,
+                                        initialAngle));
 
-                this.BALANCE = new EncoderDriveCommand(driveSubsystem, -3.3)
-                                .andThen(new WaitCommand(1));
+        private final Command FULL = new ArmPIDCommand(armSubsystem, 16)
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 2)) // Score Mid
+                        // .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6)) // Score High
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new ArmPIDCommand(armSubsystem, -65))
+                        .andThen(new EncoderDriveCommand(driveSubsystem, ahrsSubsystem, -2.7)
+                                        .andThen(new BalanceCommand(driveSubsystem,
+                                                        ahrsSubsystem::getBalanceAngle,
+                                                        initialAngle)));
 
-        }
-
-        private final Command SCORE_MID_BACK_OUT = SCORE_MID.andThen(new EncoderDriveCommand(driveSubsystem, -3));
+        private final Command SCORE_MID_BACK_OUT = SCORE_MID
+                        .andThen(new EncoderDriveCommand(driveSubsystem, ahrsSubsystem, -3));
 
         private final Command DEFAULT = Commands.runOnce(() -> {
                 System.out.println(":)");
@@ -144,7 +155,8 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand(AutonomousChoices autoCode) {
-                float initialAngle = ahrsSubsystem.getBalanceAngle();
+                initialAngle = ahrsSubsystem.getBalanceAngle();
+                SmartDashboard.putNumber("Balance angle ", initialAngle);
                 switch (autoCode) {
                         case ArmScore:
                                 return SCORE_MID;
@@ -156,10 +168,7 @@ public class RobotContainer {
                                 return SCORE_MID_BACK_OUT;
 
                         case Full:
-
-                                return SCORE_MID.andThen(BALANCE).andThen(new BalanceCommand(driveSubsystem,
-                                                ahrsSubsystem::getBalanceAngle,
-                                                initialAngle));
+                                return FULL;
 
                         case PathTest:
                                 PathPlannerTrajectory examplePath = PathPlanner.loadPath("DriveStraight",

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.I2C;
 
 public class AHRSSubsystem extends SubsystemBase {
-    private final AHRS ahrs = new AHRS(I2C.Port.kMXP);
+    private final AHRS ahrs = new AHRS();
 
     public AHRSSubsystem() {
     }
