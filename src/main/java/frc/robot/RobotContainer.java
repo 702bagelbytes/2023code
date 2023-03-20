@@ -20,6 +20,8 @@ import frc.robot.Robot.AutonomousChoices;
 import frc.robot.commands.ArmPIDCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.EncoderDriveCommand;
+import frc.robot.commands.MoveBackwardsCommand;
+import frc.robot.commands.MoveForwardCommand;
 import frc.robot.commands.TelescopePIDCommand;
 import frc.robot.subsystems.AHRSSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
@@ -82,16 +84,30 @@ public class RobotContainer {
         private void configureButtonBindings() {
                 // Driver
 
-                driveSubsystem.setDefaultCommand(driveSubsystem.tankDriveCmd(() -> -driverController.getLeftY(),
-                                () -> -driverController.getRightY()));
+                driveSubsystem.setDefaultCommand(driveSubsystem.tankDriveCmd(
+                                () -> {
+                                        if (driverController.rightTrigger().getAsBoolean()) {
+                                                return 0.5 * -driverController.getLeftY();
+                                        } else {
+                                                return -driverController.getLeftY();
+                                        }
+                                },
+                                () -> {
+                                        if (driverController.rightTrigger().getAsBoolean()) {
+                                                return 0.5 * -driverController.getRightY();
+                                        } else {
+                                                return -driverController.getRightY();
+                                        }
+                                }));
                 // driverController.a().whileTrue(new EncoderDriveCommand(driveSubsystem, 5));
                 // driverController.b().onTrue(new
                 // InstantCommand(driveSubsystem::resetEncoders));
 
                 // Co-Driver
                 armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
-                coDriverController.povUp().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
-                coDriverController.povRight().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
+                coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
+                coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
+                coDriverController.leftBumper().onTrue(new ArmPIDCommand(armSubsystem, -55));
                 coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 0));
                 coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.05));
                 coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
@@ -116,33 +132,47 @@ public class RobotContainer {
                 this.armSubsystem.setBrakeMode(newMode);
         }
 
-        private final Command SCORE_MID = new ArmPIDCommand(armSubsystem, 16)
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 2.5)) // Score Mid
-                        // .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6)) // Score High
-                        .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1))
-                        .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new ArmPIDCommand(armSubsystem, -65));
+        private final Command SCORE_MID = new ArmPIDCommand(armSubsystem, 10)
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 4.5)) // Score Mid
+                        .andThen(new ArmPIDCommand(armSubsystem, -10))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1));
+        // .andThen(grabotronSubsystem.toggleCommand())
 
-        private final Command BALANCE = new EncoderDriveCommand(driveSubsystem, ahrsSubsystem, -2.4)
-                        .andThen(new BalanceCommand(driveSubsystem,
-                                        ahrsSubsystem::getBalanceAngle,
-                                        initialAngle));
+        // .andThen(grabotronSubsystem.toggleCommand())
 
-        private final Command FULL = new ArmPIDCommand(armSubsystem, 16)
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 2)) // Score Mid
-                        // .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6)) // Score High
+        // .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
+
+        private final Command SCORE_HIGH = new ArmPIDCommand(armSubsystem, 18)
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.65))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.07))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new ArmPIDCommand(armSubsystem, 65))
+                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
+
+        private final Command BALANCE = new ArmPIDCommand(armSubsystem, -50)
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 1))
                         .andThen(grabotronSubsystem.toggleCommand())
                         .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1))
                         .andThen(grabotronSubsystem.toggleCommand())
                         .andThen(new ArmPIDCommand(armSubsystem, -65))
-                        .andThen(new EncoderDriveCommand(driveSubsystem, ahrsSubsystem, -2.7)
+                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5)
                                         .andThen(new BalanceCommand(driveSubsystem,
                                                         ahrsSubsystem::getBalanceAngle,
-                                                        initialAngle)));
+                                                        0)));
 
-        private final Command SCORE_MID_BACK_OUT = SCORE_MID
-                        .andThen(new EncoderDriveCommand(driveSubsystem, ahrsSubsystem, -3));
+        private final Command SCORE_LOW = new ArmPIDCommand(armSubsystem, -50)
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 1))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new ArmPIDCommand(armSubsystem, -65))
+                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
+
+        private final Command BumpBackOut = new MoveForwardCommand(driveSubsystem).withTimeout(0.5)
+                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2));
+
+        private final Command SCORE_MID_BACK_OUT = SCORE_MID;
 
         private final Command DEFAULT = Commands.runOnce(() -> {
                 System.out.println(":)");
@@ -158,17 +188,22 @@ public class RobotContainer {
                 initialAngle = ahrsSubsystem.getBalanceAngle();
                 SmartDashboard.putNumber("Balance angle ", initialAngle);
                 switch (autoCode) {
+                        case ScoreHigh:
+                                return SCORE_HIGH;
+
                         case ArmScore:
                                 return SCORE_MID;
 
                         case Balance:
                                 return BALANCE;
+                        case BumpBackOut:
+                                return BumpBackOut;
 
                         case ScoreMidAndBackOut:
                                 return SCORE_MID_BACK_OUT;
 
-                        case Full:
-                                return FULL;
+                        case ScoreLowAndBackOut:
+                                return SCORE_LOW;
 
                         case PathTest:
                                 PathPlannerTrajectory examplePath = PathPlanner.loadPath("DriveStraight",

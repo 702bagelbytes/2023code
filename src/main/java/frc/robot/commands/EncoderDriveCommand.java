@@ -28,8 +28,8 @@ public class EncoderDriveCommand extends CommandBase {
         this.ahrsSubsystem = ahrsSubsystem;
         leftController.setSetpoint(distance);
         rightController.setSetpoint(distance);
-        leftController.setTolerance(0.5);
-        rightController.setTolerance(0.5);
+        leftController.setTolerance(0.1);
+        rightController.setTolerance(0.1);
         addRequirements(driveSubsystem);
     }
 
@@ -53,9 +53,8 @@ public class EncoderDriveCommand extends CommandBase {
     @Override
     public boolean isFinished() {
 
-        boolean tilted = Math.abs(ahrsSubsystem.getBalanceAngle()) > 11;
         boolean atSetpoint = leftController.atSetpoint() && rightController.atSetpoint();
-        return tilted || atSetpoint;
+        return atSetpoint;
     }
 
     @Override

@@ -12,6 +12,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,8 +39,10 @@ public class Robot extends TimedRobot {
     Default("Default Command"),
     PathTest("Paths (beta)"),
     PathTestBackwards("Path backwwards (beta)"),
-    Full("Full (beta)"),
-    ScoreMidAndBackOut("Score Mid and Back out (beta)");
+    ScoreLowAndBackOut("Score Low and Back out"),
+    ScoreMidAndBackOut("Score Mid and Back out (beta)"),
+    ScoreHigh("Score High"),
+    BumpBackOut("bump piece and Back out");
 
     String label;
 
@@ -70,8 +73,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    UsbCamera camera = CameraServer.startAutomaticCapture();
-    camera.setResolution(240, 180);
+    // UsbCamera camera = CameraServer.startAutomaticCapture();
+    // camera.setResolution(320, 240);
+    // camera.setFPS(15);
+    // camera.setPixelFormat(PixelFormat.kMJPEG);
 
     m_robotContainer = new RobotContainer();
 

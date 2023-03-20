@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 import java.lang.Math;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPRamseteCommand;
@@ -76,6 +77,12 @@ public class DriveSubsystem extends SubsystemBase {
         talonMR.setNeutralMode(NeutralMode.Brake);
         talonBR.setNeutralMode(NeutralMode.Brake);
 
+        sparkFL.setSmartCurrentLimit(30);
+        sparkFR.setSmartCurrentLimit(30);
+        talonML.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 40, 0.1));
+        talonMR.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 40, 0.1));
+        talonBL.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 40, 0.1));
+        talonBR.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 40, 0.1));
         leftEncoder.setInverted(DriveConstants.LEFT_ENCODER_INVERTED);
         rightEncoder.setInverted(DriveConstants.RIGHT_ENCODER_INVERTED);
 
