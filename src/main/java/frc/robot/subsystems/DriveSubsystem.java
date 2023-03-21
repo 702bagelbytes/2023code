@@ -151,9 +151,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void outputVoltsNegative(double left, double right) {
         SmartDashboard.putNumber("left volts", -left);
-        SmartDashboard.putNumber("right volts", -right);
+        SmartDashboard.putNumber("right volts", right);
         this.leftGroup.setVoltage(-left);
-        this.rightGroup.setVoltage(-right);
+        this.rightGroup.setVoltage(right);
     }
 
     public void outputVolts(double left, double right) {

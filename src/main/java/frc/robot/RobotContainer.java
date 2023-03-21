@@ -5,11 +5,14 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
+
 import java.lang.Math;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -132,30 +135,53 @@ public class RobotContainer {
                 this.armSubsystem.setBrakeMode(newMode);
         }
 
-        private final Command SCORE_MID = new ArmPIDCommand(armSubsystem, 10)
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 4.5)) // Score Mid
-                        .andThen(new ArmPIDCommand(armSubsystem, -10))
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1));
-        // .andThen(grabotronSubsystem.toggleCommand())
-
-        // .andThen(grabotronSubsystem.toggleCommand())
-
-        // .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
+        private final Command SCORE_MID = new ArmPIDCommand(armSubsystem, 16)
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 3.2)) // Score Mid
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new ArmPIDCommand(armSubsystem, -69))
+                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
 
         private final Command SCORE_HIGH = new ArmPIDCommand(armSubsystem, 18)
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.65))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6))
                         .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.07))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
                         .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new ArmPIDCommand(armSubsystem, 65))
+                        .andThen(new ArmPIDCommand(armSubsystem, -69))
                         .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
+
+        PathPlannerTrajectory twoPieceTest = PathPlanner.loadPath("TwoGamePieceAutoL", 3, 1);
+        PathPlannerTrajectory twoPieceTest2 = PathPlanner.loadPath("TwoGamePieceAuto2", 3, 1);
+        private final Command TWO_PIECE_AUTO = new ArmPIDCommand(armSubsystem, 16)
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 3.2)) // Score Mid
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new ArmPIDCommand(armSubsystem, -69))
+                        .andThen(driveSubsystem.followTrajectoryCommand(twoPieceTest, true, false))
+                        .andThen(new ArmPIDCommand(armSubsystem, -50))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 1))
+                        .andThen(grabotronSubsystem.toggleCommand())
+                        .andThen(Commands.parallel(
+                                        new TelescopePIDCommand(telescopeSubsystem, 0.05),
+                                        new ArmPIDCommand(armSubsystem, 60))
+                                        .andThen(driveSubsystem.followTrajectoryCommand(twoPieceTest2, true, false))
+                                        .andThen(new ArmPIDCommand(armSubsystem, 16))
+                                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 3.2)) // Score Mid
+                                        .andThen(grabotronSubsystem.toggleCommand())
+                                        .andThen(Commands.parallel(
+                                                        new TelescopePIDCommand(telescopeSubsystem, 0.05),
+                                                        grabotronSubsystem.toggleCommand()))
+                                        .andThen(new ArmPIDCommand(armSubsystem, -69)));
 
         private final Command BALANCE = new ArmPIDCommand(armSubsystem, -50)
                         .andThen(new TelescopePIDCommand(telescopeSubsystem, 1))
                         .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
                         .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new ArmPIDCommand(armSubsystem, -65))
+                        .andThen(new ArmPIDCommand(armSubsystem, -69))
                         .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5)
                                         .andThen(new BalanceCommand(driveSubsystem,
                                                         ahrsSubsystem::getBalanceAngle,
@@ -164,9 +190,9 @@ public class RobotContainer {
         private final Command SCORE_LOW = new ArmPIDCommand(armSubsystem, -50)
                         .andThen(new TelescopePIDCommand(telescopeSubsystem, 1))
                         .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.1))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
                         .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new ArmPIDCommand(armSubsystem, -65))
+                        .andThen(new ArmPIDCommand(armSubsystem, -69))
                         .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
 
         private final Command BumpBackOut = new MoveForwardCommand(driveSubsystem).withTimeout(0.5)
