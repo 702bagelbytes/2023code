@@ -42,7 +42,10 @@ public class Robot extends TimedRobot {
     ScoreLowAndBackOut("Score Low and Back out"),
     ScoreMidAndBackOut("Score Mid and Back out (beta)"),
     ScoreHigh("Score High"),
-    BumpBackOut("bump piece and Back out");
+    BumpBackOut("bump piece and Back out"),
+    TwoPieceAuto("Two Piece Auto (beta)"),
+    ScoreHighTwice("Score High Twice (beta)"),
+    BumpScoreSecondPiece("Bump and Score second piece (beta) ");
 
     String label;
 

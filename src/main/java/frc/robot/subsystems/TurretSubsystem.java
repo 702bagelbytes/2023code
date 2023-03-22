@@ -24,67 +24,8 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public void set(double value) {
-        talon.set(filter.calculate(value));
+        talon.set(filter.calculate(value / 6));
     }
-
-    private static double clampRotation(double numRotations, double speed) {
-        final double MAX_LEFT = -.5;
-        final double MAX_RIGHT = .5;
-
-        final double[][] SLOWING_THRESHOLD = {
-                { .1, 1d / 2d },
-                { .05, 1d / 6d }
-        };
-
-        if (numRotations > MAX_RIGHT || numRotations < MAX_LEFT) {
-            return 0d;
-        }
-
-        double rotationsAbs = Math.abs(numRotations);
-        double slowed = .5 - rotationsAbs;
-
-        if (slowed < SLOWING_THRESHOLD[0][0]) {
-            return speed * SLOWING_THRESHOLD[0][1];
-        }
-
-        if (slowed < SLOWING_THRESHOLD[1][0]) {
-            return speed * SLOWING_THRESHOLD[1][1];
-        }
-
-        return speed;
-    }
-
-    // @Deprecated
-    // private boolean allowErrorFor(double actual, double errAmt, double expected)
-    // {
-    // double[] bounds = { expected + errAmt, expected - errAmt };
-    // return actual <= bounds[0] && actual >= bounds[1];
-    // }
-
-    // /**
-    // * FIXME: does not work
-    // */
-    // @Deprecated
-    // public Command resetArm() {
-    // return Commands.runEnd(() -> {
-    // while (true) {
-    // final double numRotations = this.getRotations();
-
-    // double speed;
-    // if (numRotations > 0) {
-    // speed = -.2;
-    // } else {
-    // speed = .2;
-    // }
-
-    // if (allowErrorFor(numRotations, .1, 0)) {
-    // return;
-    // }
-
-    // this.talon.set(speed);
-    // }
-    // }, () -> this.talon.set(0), this);
-    // }
 
     /**
      * turret sprockets have a 14:1 gear ratio.
@@ -92,7 +33,12 @@ public class TurretSubsystem extends SubsystemBase {
      * @return the number of rotations
      */
     public double getRotationsAsDeg() {
-        return talon.getSelectedSensorPosition() / 4096D / 36D * 360;
+        return talon.getSelectedSensorPosition() / 2048D / 140D / 12D * 360;
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Turret Encoder Value", getRotationsAsDeg());
     }
 
     public Command runCmd(DoubleSupplier input) {
