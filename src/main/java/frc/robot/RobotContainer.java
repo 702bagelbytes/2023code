@@ -4,19 +4,11 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
 
-import java.lang.Math;
-import java.nio.file.Path;
-
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -113,8 +105,8 @@ public class RobotContainer {
                 armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
                 coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
-                coDriverController.leftBumper().onTrue(new ArmPIDCommand(armSubsystem, -55));
-                coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 0));
+                // coDriverController.leftBumper().onTrue(new ArmPIDCommand(armSubsystem, -55));
+                // coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 0));
                 coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.05));
                 coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
                 coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());

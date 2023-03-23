@@ -7,15 +7,24 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonFX armTalonFX = new WPI_TalonFX(Constants.ArmConstants.ARM_TALON_ID);
+    private final PIDController armPIDController = new PIDController(0.08, 0, 0.01);
+    private double setpoint;
 
     public ArmSubsystem() {
         armTalonFX.configForwardSoftLimitThreshold(Constants.ArmConstants.MAX_UP_DEG);
         armTalonFX.configForwardSoftLimitEnable(Constants.ArmConstants.FORWARD_LIMIT_TOGGLE);
+        armTalonFX.setNeutralMode(NeutralMode.Brake);
+        armPIDController.setTolerance(4);
 
+    }
+
+    public WPI_TalonFX getTalon() {
+        return armTalonFX;
     }
 
     public void setBrakeMode(NeutralMode newMode) {
@@ -34,17 +43,6 @@ public class ArmSubsystem extends SubsystemBase {
     public double getEncoderPositionDeg() {
 
         return degFromTicks(armTalonFX.getSelectedSensorPosition());
-    }
-
-    /**
-     * Set the speed of the motor. In other words, move it!
-     * Don't forget to call this method with zero to stop the motor.
-     */
-    public void set(double value) {
-        double calculated = value * Constants.ArmConstants.kMaxArmOutput;
-
-        armTalonFX.set(calculated);
-
     }
 
     public static double degFromTicks(double ticks) {
@@ -69,12 +67,39 @@ public class ArmSubsystem extends SubsystemBase {
                 * Constants.EncoderConstants.BASE;
     }
 
+    public PIDController getArmPID() {
+        return armPIDController;
+    }
+
+    public void set() {
+        double calculated = armPIDController.calculate(getEncoderPositionDeg(), setpoint)
+                * Constants.ArmConstants.kMaxArmOutput;
+        armTalonFX.set(calculated);
+
+    }
+
+    public void setOld(double val) {
+        double speed = val * Constants.ArmConstants.kMaxArmOutput;
+        armTalonFX.set(speed);
+
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm Angle", this.getEncoderPositionDeg());
+        // if (setpoint <= -73) {
+        // setpoint = -73;
+        // }
+
+        // else if (setpoint >= 20) {
+        // setpoint = 20;
+        // }
+        // this.set();
     }
 
     public Command moveCmd(DoubleSupplier input) {
-        return this.runEnd(() -> this.set(input.getAsDouble()), () -> this.set(0));
+        return // this.run(() -> setpoint += (input.getAsDouble() / 2));
+        this.runEnd(() -> this.setOld(input.getAsDouble()), () -> this.setOld(0));
+
     }
 }

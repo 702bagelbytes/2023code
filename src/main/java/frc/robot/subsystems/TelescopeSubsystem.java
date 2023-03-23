@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.TelescopeConstants;
 
 public class TelescopeSubsystem extends SubsystemBase {
@@ -25,7 +26,7 @@ public class TelescopeSubsystem extends SubsystemBase {
 
     public TelescopeSubsystem() {
         extensionTalon.setNeutralMode(NeutralMode.Brake);
-
+        extensionTalon.setInverted(true);
     }
 
     public void resetEncoders() {
@@ -33,7 +34,7 @@ public class TelescopeSubsystem extends SubsystemBase {
     }
 
     public void set(double value) {
-        extensionTalon.set(.75 * value);
+        extensionTalon.set(Constants.TelescopeConstants.kTelescopeSpeed * value);
     }
 
     /**

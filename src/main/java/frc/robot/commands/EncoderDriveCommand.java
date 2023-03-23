@@ -1,18 +1,11 @@
 package frc.robot.commands;
 
-import java.util.function.Function;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.AHRSSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class EncoderDriveCommand extends CommandBase {
     private DriveSubsystem driveSubsystem;
-    private AHRSSubsystem ahrsSubsystem;
     private PIDController leftController = new PIDController(0.35, 0, 0.005);
     private PIDController rightController = new PIDController(0.37, 0, 0.005);
 
@@ -23,9 +16,8 @@ public class EncoderDriveCommand extends CommandBase {
     public static double maxVel = 0;
     public static double maxAccel = 0;
 
-    public EncoderDriveCommand(DriveSubsystem driveSubsystem, AHRSSubsystem ahrsSubsystem, double distance) {
+    public EncoderDriveCommand(DriveSubsystem driveSubsystem, double distance) {
         this.driveSubsystem = driveSubsystem;
-        this.ahrsSubsystem = ahrsSubsystem;
         leftController.setSetpoint(distance);
         rightController.setSetpoint(distance);
         leftController.setTolerance(0.1);
