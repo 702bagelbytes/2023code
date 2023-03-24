@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -14,12 +15,14 @@ public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonFX armTalonFX = new WPI_TalonFX(Constants.ArmConstants.ARM_TALON_ID);
     private final PIDController armPIDController = new PIDController(0.08, 0, 0.01);
     private double setpoint;
+    RobotContainer robotContainer;
 
     public ArmSubsystem() {
         armTalonFX.configForwardSoftLimitThreshold(Constants.ArmConstants.MAX_UP_DEG);
         armTalonFX.configForwardSoftLimitEnable(Constants.ArmConstants.FORWARD_LIMIT_TOGGLE);
         armTalonFX.setNeutralMode(NeutralMode.Brake);
         armPIDController.setTolerance(4);
+        setpoint = getEncoderPositionDeg();
 
     }
 
@@ -74,7 +77,7 @@ public class ArmSubsystem extends SubsystemBase {
     public void set() {
         double calculated = armPIDController.calculate(getEncoderPositionDeg(), setpoint)
                 * Constants.ArmConstants.kMaxArmOutput;
-        armTalonFX.set(calculated);
+        armTalonFX.set(calculated + robotContainer.getCoDriverController().getLeftY() * 0.2);
 
     }
 
@@ -97,9 +100,14 @@ public class ArmSubsystem extends SubsystemBase {
         // this.set();
     }
 
+    public Command setCmd(double newSetpoint) {
+
+        return this.runOnce(() -> setpoint = newSetpoint);
+    }
+
     public Command moveCmd(DoubleSupplier input) {
-        return // this.run(() -> setpoint += (input.getAsDouble() / 2));
-        this.runEnd(() -> this.setOld(input.getAsDouble()), () -> this.setOld(0));
+        return this.runOnce(() -> setpoint = (input.getAsDouble() * 45) - 25);
+        // this.runEnd(() -> this.setOld(input.getAsDouble()), () -> this.setOld(0));
 
     }
 }

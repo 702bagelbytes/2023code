@@ -102,16 +102,22 @@ public class RobotContainer {
                 // InstantCommand(driveSubsystem::resetEncoders));
 
                 // Co-Driver
-                armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
+                // armSubsystem.moveCmd(() -> -coDriverController.getLeftY());
+
                 coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
-                // coDriverController.leftBumper().onTrue(new ArmPIDCommand(armSubsystem, -55));
-                // coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 0));
+                coDriverController.leftBumper().onTrue(armSubsystem.setCmd(-55));
+                coDriverController.b().onTrue(armSubsystem.setCmd(0));
                 coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.05));
                 coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
                 coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());
                 coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
                 turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
+        }
+
+        public CommandXboxController getCoDriverController() {
+                return coDriverController;
+
         }
 
         public void resetGyro() {
