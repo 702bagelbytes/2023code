@@ -103,21 +103,17 @@ public class RobotContainer {
 
                 // Co-Driver
                 // armSubsystem.moveCmd(() -> -coDriverController.getLeftY());
-
+                armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
                 coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
                 coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
-                coDriverController.leftBumper().onTrue(armSubsystem.setCmd(-55));
-                coDriverController.b().onTrue(armSubsystem.setCmd(0));
-                coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.05));
+                coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.02));
+                // coDriverController.b().onTrue(new TelescopePIDCommand(telescopeSubsystem,
+                // 5.5));
+                coDriverController.leftBumper().onTrue(new ArmPIDCommand(armSubsystem, 0));
                 coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
                 coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());
                 coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
                 turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
-        }
-
-        public CommandXboxController getCoDriverController() {
-                return coDriverController;
-
         }
 
         public void resetGyro() {
@@ -174,13 +170,8 @@ public class RobotContainer {
                                         grabotronSubsystem.toggleCommand()))
                         .andThen(new ArmPIDCommand(armSubsystem, -69));
 
-        private final Command BALANCE = new ArmPIDCommand(armSubsystem, -50)
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 1))
-                        .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
-                        .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new ArmPIDCommand(armSubsystem, -69))
-                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5)
+        private final Command BALANCE = new MoveForwardCommand(driveSubsystem).withTimeout(0.5)
+                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(3.3)
                                         .andThen(new BalanceCommand(driveSubsystem,
                                                         ahrsSubsystem::getBalanceAngle,
                                                         0)));

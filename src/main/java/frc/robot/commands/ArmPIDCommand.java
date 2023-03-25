@@ -1,31 +1,38 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmPIDCommand extends CommandBase {
   ArmSubsystem armSubsystem;
+  private PIDController armPIDController = new PIDController(0.08, 0, 0.01);
 
   public ArmPIDCommand(ArmSubsystem armSubsystem, double setpoint) {
     this.armSubsystem = armSubsystem;
     addRequirements(armSubsystem);
-    armSubsystem.getArmPID().setSetpoint(setpoint);
+    armPIDController.setSetpoint(setpoint);
+    armPIDController.setTolerance(4);
+
+  }
+
+  @Override
+  public void execute() {
+    double speed = armPIDController.calculate(armSubsystem.getEncoderPositionDeg());
+
+    armSubsystem.set(speed);
 
   }
 
   @Override
   public boolean isFinished() {
-    if (armSubsystem.getArmPID().atSetpoint()) {
-      armSubsystem.getTalon().set(0);
-      return true;
-    }
-    return false;
+    return armPIDController.atSetpoint();
   }
 
   @Override
   public void end(boolean isInterrupted) {
-    armSubsystem.getTalon().set(0);
+    armSubsystem.set(0);
 
   }
 }

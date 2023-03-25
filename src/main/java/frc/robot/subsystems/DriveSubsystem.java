@@ -18,7 +18,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -43,9 +42,6 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX talonML = new WPI_TalonSRX(DriveConstants.TALON_ML_ID);
     private final WPI_TalonSRX talonBL = new WPI_TalonSRX(DriveConstants.TALON_BL_ID);
     private final MotorControllerGroup leftGroup = new MotorControllerGroup(sparkFL, talonML, talonBL);
-    // private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
-    private final SlewRateLimiter leftLimiter = new SlewRateLimiter(4);
-    private final SlewRateLimiter rightLimiter = new SlewRateLimiter(4);
     DifferentialDriveOdometry m_odometry;
     private final Supplier<Rotation2d> getRotation2d;
 
