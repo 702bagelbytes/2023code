@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
     PathTestBackwards("Path backwwards (beta)"),
     ScoreLowAndBackOut("Score Low and Back out"),
     ScoreMidAndBackOut("Score Mid and Back out (beta)"),
-    ScoreHigh("Score High"),
+    BumpAlone("bump Alone"),
     BumpBackOut("bump piece and Back out"),
     TwoPieceAuto("Two Piece Auto (beta)"),
     ScoreHighTwice("Score High Twice (beta)"),

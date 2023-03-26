@@ -140,14 +140,7 @@ public class RobotContainer {
                         .andThen(new ArmPIDCommand(armSubsystem, -69))
                         .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
 
-        private final Command SCORE_HIGH = new ArmPIDCommand(armSubsystem, 18)
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 5.6))
-                        .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
-                        .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new ArmPIDCommand(armSubsystem, -69))
-                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(2.5));
-
+        private final Command bumpAlone = new MoveForwardCommand(driveSubsystem).withTimeout(0.5);
         PathPlannerTrajectory twoPieceTest = PathPlanner.loadPath("TwoGamePieceAutoL", 1, 0.5);
         PathPlannerTrajectory twoPieceTest2 = PathPlanner.loadPath("TwoGamePieceAuto2", 1, 0.5);
         private final Command TWO_PIECE_AUTO = new ArmPIDCommand(armSubsystem, 16)
@@ -170,11 +163,13 @@ public class RobotContainer {
                                         grabotronSubsystem.toggleCommand()))
                         .andThen(new ArmPIDCommand(armSubsystem, -69));
 
-        private final Command BALANCE = new MoveForwardCommand(driveSubsystem).withTimeout(0.5)
-                        .andThen(new MoveBackwardsCommand(driveSubsystem).withTimeout(3.3)
-                                        .andThen(new BalanceCommand(driveSubsystem,
-                                                        ahrsSubsystem::getBalanceAngle,
-                                                        0)));
+        private final Command BALANCE = // new MoveForwardCommand(driveSubsystem).withTimeout(0.5)
+                        // .andThen(
+
+                        new MoveBackwardsCommand(driveSubsystem).withTimeout(3.3)
+                                        .andThen(new MoveForwardCommand(driveSubsystem).withTimeout(2));
+        // .andThen(new BalanceCommand(driveSubsystem, ahrsSubsystem::getBalanceAngle,
+        // 0));
 
         private final Command SCORE_LOW = new ArmPIDCommand(armSubsystem, -50)
                         .andThen(new TelescopePIDCommand(telescopeSubsystem, 1))
@@ -237,8 +232,8 @@ public class RobotContainer {
                 initialAngle = ahrsSubsystem.getBalanceAngle();
                 SmartDashboard.putNumber("Balance angle ", initialAngle);
                 switch (autoCode) {
-                        case ScoreHigh:
-                                return SCORE_HIGH;
+                        case BumpAlone:
+                                return bumpAlone;
 
                         case TwoPieceAuto:
                                 return TWO_PIECE_AUTO;

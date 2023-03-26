@@ -14,7 +14,7 @@ public class MoveBackwardsCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driveSubsystem.tankDrive(-0.725, -0.75);
+        driveSubsystem.tankDrive(-0.715, -0.75);
     }
 
     public void end() {
