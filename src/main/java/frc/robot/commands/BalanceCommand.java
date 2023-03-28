@@ -27,8 +27,8 @@ public class BalanceCommand extends CommandBase {
 
         double leftSpeed = controller.calculate(balanceAngleSupplier.get());
         double rightSpeed = controller.calculate(balanceAngleSupplier.get());
-        leftSpeed = MathUtil.clamp(leftSpeed, -0.58, 0.58);
-        rightSpeed = MathUtil.clamp(rightSpeed, -0.6, 0.6);
+        leftSpeed = MathUtil.clamp(leftSpeed, -0.524, 0.524);
+        rightSpeed = MathUtil.clamp(rightSpeed, -0.55, 0.55);
         SmartDashboard.putData(controller);
         SmartDashboard.putNumber("L_AutoSpeed", leftSpeed);
         SmartDashboard.putNumber("R_AutoSpeed", rightSpeed);

@@ -14,7 +14,7 @@ public class MoveForwardCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driveSubsystem.tankDrive(0.715, 0.75);
+        driveSubsystem.tankDrive(0.73, 0.75);
     }
 
     public void end() {
