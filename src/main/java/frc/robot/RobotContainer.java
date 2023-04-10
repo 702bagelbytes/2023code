@@ -102,20 +102,18 @@ public class RobotContainer {
                 // InstantCommand(driveSubsystem::resetEncoders));
 
                 // Co-Driver
-                // armSubsystem.moveCmd(() -> -coDriverController.getLeftY());
-                // armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() ->
-                // -coDriverController.getLeftY()));
-                // coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
-                // coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
-                // coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem,
-                // 0.02));
+                armSubsystem.moveCmd(() -> -coDriverController.getLeftY());
+                armSubsystem.setDefaultCommand(armSubsystem.moveCmd(() -> -coDriverController.getLeftY()));
+                coDriverController.y().whileTrue(telescopeSubsystem.moveCmd(() -> 1.0));
+                coDriverController.a().whileTrue(telescopeSubsystem.moveCmd(() -> -1.0));
+                coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem,
+                                0.02));
 
-                // coDriverController.leftBumper().onTrue(new ArmPIDCommand(armSubsystem, 0));
-                // coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
-                // coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());
-                // coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
-                // turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() ->
-                // coDriverController.getRightX()));
+                coDriverController.leftBumper().onTrue(new ArmPIDCommand(armSubsystem, 0));
+                coDriverController.povDown().onTrue(armSubsystem.resetEncodersCommand());
+                coDriverController.povLeft().onTrue(telescopeSubsystem.resetEncodersCommand());
+                coDriverController.rightTrigger(0.5).onTrue(grabotronSubsystem.toggleCommand());
+                turretSubsystem.setDefaultCommand(turretSubsystem.runCmd(() -> coDriverController.getRightX()));
         }
 
         public void resetGyro() {
@@ -145,21 +143,16 @@ public class RobotContainer {
         private final Command bumpAlone = new MoveForwardCommand(driveSubsystem).withTimeout(0.5);
         PathPlannerTrajectory twoPieceTest = PathPlanner.loadPath("TwoGamePieceAutoL", 1, 0.5);
         PathPlannerTrajectory twoPieceTest2 = PathPlanner.loadPath("TwoGamePieceAuto2", 1, 0.5);
-        private final Command TWO_PIECE_AUTO = new ArmPIDCommand(armSubsystem, 16)
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 3.2)) // Score Mid
-                        .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
-                        .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new ArmPIDCommand(armSubsystem, -69))
+        private final Command TWO_PIECE_AUTO = new MoveForwardCommand(driveSubsystem).withTimeout(0.5)
                         .andThen(driveSubsystem.followTrajectoryCommand(twoPieceTest, true, false))
                         .andThen(new ArmPIDCommand(armSubsystem, -50))
                         .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 1))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.5))
                         .andThen(grabotronSubsystem.toggleCommand())
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.05))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 0.005))
                         .andThen(driveSubsystem.followTrajectoryCommand(twoPieceTest2, false, false))
-                        .andThen(new ArmPIDCommand(armSubsystem, 16))
-                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 3.2)) // Score Mid
+                        .andThen(new ArmPIDCommand(armSubsystem, 18))
+                        .andThen(new TelescopePIDCommand(telescopeSubsystem, 3.5)) // Score Mid
                         .andThen(grabotronSubsystem.toggleCommand())
                         .andThen(Commands.parallel(new TelescopePIDCommand(telescopeSubsystem, 0.05),
                                         grabotronSubsystem.toggleCommand()))
