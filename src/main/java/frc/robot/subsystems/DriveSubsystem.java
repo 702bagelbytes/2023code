@@ -116,6 +116,19 @@ public class DriveSubsystem extends SubsystemBase {
         return Math.copySign(minSpeed, speed) + (1 - minSpeed) * speed;
     }
 
+    public void arcadeDrive(double speed, double rotation) {
+        speed = clampSpeed(speed);
+        SmartDashboard.putNumber("Speed", speed);
+        drive.arcadeDrive(speed, rotation, true);
+
+    }
+
+    public Command arcadeDriveCmd(Supplier<Double> speedSupplier, Supplier<Double> rotationSupplier) {
+        return this.runEnd(
+                () -> arcadeDrive(speedSupplier.get(), rotationSupplier.get()),
+                () -> drive.arcadeDrive(0, 0));
+    }
+
     public void tankDrive(double leftSpeed, double rightSpeed) {
         // leftSpeed = leftLimiter.calculate(clampSpeed(leftSpeed));
         leftSpeed = clampSpeed(leftSpeed);

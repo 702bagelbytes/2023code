@@ -6,12 +6,12 @@ import frc.robot.subsystems.TelescopeSubsystem;
 
 public class TelescopePIDCommand extends CommandBase {
     TelescopeSubsystem telescopeSubsystem;
-    PIDController telescopePIDController = new PIDController(1, 0, .005);
+    PIDController telescopePIDController = new PIDController(0.1, 0, .005);//used to be one but they changed the gearbox so test it
 
     public TelescopePIDCommand(TelescopeSubsystem telescopeSubsystem, double setpoint) {
         this.telescopeSubsystem = telescopeSubsystem;
         telescopePIDController.setSetpoint(setpoint);
-        telescopePIDController.setTolerance(0.2);
+        telescopePIDController.setTolerance(0.2); //maybe change this to 0.1 or lower?
         addRequirements(telescopeSubsystem);
     }
 
