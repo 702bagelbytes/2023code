@@ -9,6 +9,19 @@ public class TurretPIDCommand extends CommandBase {
     TurretSubsystem turretSubsystem;
     PIDController turretPIDController = new PIDController(0.005, 0, 0);
 
+/* 
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+DO NOT USE WITHOUT PROPER TESTING!!!!!!
+ */
+
     public TurretPIDCommand(TurretSubsystem turretSubsystem, double setpoint) {
         this.turretSubsystem = turretSubsystem;
         turretPIDController.setSetpoint(setpoint);

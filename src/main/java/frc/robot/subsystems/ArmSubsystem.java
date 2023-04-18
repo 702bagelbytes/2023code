@@ -9,13 +9,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonFX armTalonFX = new WPI_TalonFX(Constants.ArmConstants.ARM_TALON_ID);
     private final PIDController armPIDController = new PIDController(0.08, 0, 0.01);
-    // private double setpoint;
+   // SupplyCurrentLimitConfiguration config = new SupplyCurrentLimitConfiguration(false, 0, 0, 0);
+    
 
     public ArmSubsystem() {
+        //armTalonFX.configSupplyCurrentLimit()
+
         armTalonFX.configForwardSoftLimitThreshold(Constants.ArmConstants.MAX_UP_DEG);
         armTalonFX.configForwardSoftLimitEnable(Constants.ArmConstants.FORWARD_LIMIT_TOGGLE);
         armTalonFX.setNeutralMode(NeutralMode.Brake);

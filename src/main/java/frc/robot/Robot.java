@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -34,17 +32,11 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   protected enum AutonomousChoices {
-    ArmScore("Arm Auto (beta)"),
     Balance("Balance (beta)"),
     Default("Default Command"),
-    PathTest("Paths (beta)"),
-    PathTestBackwards("Path backwwards (beta)"),
-    ScoreLowAndBackOut("Score Low and Back out"),
-    ScoreMidAndBackOut("Score Mid and Back out (beta)"),
     BumpAlone("bump Alone"),
     BumpBackOut("bump piece and Back out"),
     TwoPieceAuto("Two Piece Auto (beta)"),
-    ScoreHighTwice("Score High Twice (beta)"),
     BumpScoreSecondPiece("Bump and Score second piece (beta) ");
 
     String label;
@@ -128,7 +120,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand(chooser.getSelected());
-    m_robotContainer.setArmBrakeMode(NeutralMode.Brake);
     m_robotContainer.resetGyro();
     m_robotContainer.resetDriveEncoders();
     // schedule the autonomous command (example)

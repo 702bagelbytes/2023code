@@ -19,6 +19,8 @@ public class TelescopeSubsystem extends SubsystemBase {
      */
     private final static double GEARBOX_RATIO = 36;
 
+    // SupplyCurrentLimitConfiguration config = new SupplyCurrentLimitConfiguration(false, 0, 0, 0);
+
     public TelescopeSubsystem() {
         extensionTalon.setNeutralMode(NeutralMode.Brake);
         extensionTalon.setInverted(true);

@@ -129,7 +129,7 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> drive.arcadeDrive(0, 0));
     }
 
-    public void tankDrive(double leftSpeed, double rightSpeed) {
+     public void tankDrive(double leftSpeed, double rightSpeed) {
         // leftSpeed = leftLimiter.calculate(clampSpeed(leftSpeed));
         leftSpeed = clampSpeed(leftSpeed);
         // rightSpeed = rightLimiter.calculate(clampSpeed(rightSpeed));
@@ -147,6 +147,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
+        //return pose;  is this correct?
     }
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -195,7 +196,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void resetOdometry(Pose2d initialPose) {
-
+        m_odometry.resetPosition(getRotation2d.get(), this.getLeftDistance(), this.getRightDistance(), initialPose);
     }
 
     @Override
