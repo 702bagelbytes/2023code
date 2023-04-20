@@ -59,7 +59,7 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem(Supplier<Rotation2d> getRotation2d) {
         this.getRotation2d = getRotation2d;
         this.m_odometry = new DifferentialDriveOdometry(
-                getRotation2d.get(), this.getLeftDistance(), this.getRightDistance());
+                getRotation2d.get(), this.getLeftDistance(), this.getRightDistance(), pose);
 
         sparkFL.setInverted(true);
         sparkFR.setInverted(true);
@@ -125,7 +125,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Command arcadeDriveCmd(Supplier<Double> speedSupplier, Supplier<Double> rotationSupplier) {
         return this.runEnd(
-                () -> arcadeDrive(speedSupplier.get(), rotationSupplier.get()),
+                () -> arcadeDrive(clampSpeed(speedSupplier.get()), rotationSupplier.get() * .75),
                 () -> drive.arcadeDrive(0, 0));
     }
 
@@ -201,6 +201,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Left Velocity", leftEncoder.getVelocity());
+        SmartDashboard.putNumber("Right Velocity", rightEncoder.getVelocity());
+        
         SmartDashboard.putString("Drive Encoders",
                 String.format("L: %.2f, R: %.2f", leftEncoder.getPosition(), rightEncoder.getPosition()));
         var gyroAngle = getRotation2d.get();

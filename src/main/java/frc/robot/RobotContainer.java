@@ -75,7 +75,10 @@ public class RobotContainer {
         private void configureButtonBindings() {
                 // Driver
 
-                driveSubsystem.setDefaultCommand(driveSubsystem.arcadeDriveCmd(
+                driveSubsystem.setDefaultCommand(
+                        driveSubsystem.arcadeDriveCmd( 
+                                // ()-> -driverController.getLeftY(),
+                                // ()-> -driverController.getRightX()));
                                 () -> {
                                         if (driverController.rightTrigger().getAsBoolean()) {
                                                 return 0.5 * -driverController.getLeftY();
@@ -83,8 +86,18 @@ public class RobotContainer {
                                                 return -driverController.getLeftY();
                                         }
 
-                                },
-                                () -> -driverController.getRightX() * .75));
+                                },  () -> 
+                                        -driverController.getRightX()));
+
+
+                                // ()-> { if(driverController.rightTrigger().getAsBoolean()) {
+                                //                 return 0.5 * -driverController.getLeftY();
+                                //         } else {
+                                //                  return -driverController.getRightY();
+                                //         }
+                                // }
+                
+                           
 
 
                 // Co-Driver
@@ -106,19 +119,21 @@ public class RobotContainer {
                 //coDriverController.x().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.005));
 
                 //reset arm and telescope position to default
-                //coDriverController.leftTrigger().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.005).andThen(new ArmPIDCommand(armSubsystem, -60))); 
+                //coDriverController.leftTrigger().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.005).andThen(new ArmPIDCommand(armSubsystem, -65))); 
 
-                //score low preset
-                //maybe not needed?
+                //pick up from ground preset
+                
+                // coDriverController.leftTrigger().onTrue(new ArmPIDCommand(armSubsystem, -47).andThen(new TelescopePIDCommand(telescopeSubsystem, 1.05)));
 
                 //score mid preset
-                //coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 0).andThen(new TelescopePIDCommand(telescopeSubsystem, 2.7)));
+              
+                // coDriverController.b().onTrue(new ArmPIDCommand(armSubsystem, 9.5).andThen(new TelescopePIDCommand(telescopeSubsystem, 1.05)));
                 
                 //score high preset(theoretical)
-                //coDriverController.povUp().onTrue(new ArmPIDCommand(armsubsystem, 18).andThen(new TelescopePIDCommand(telescopeSubsystem, 5.5)));
+                //coDriverController.povUp().onTrue(new ArmPIDCommand(armsubsystem, 22).andThen(new TelescopePIDCommand(telescopeSubsystem, 5.5)));
 
                 //substation pickup preset
-                //coDriverController.leftBumper().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.05).andThen(new ArmPIDCommand(armSubsystem, 5)));
+                //coDriverController.leftBumper().onTrue(new TelescopePIDCommand(telescopeSubsystem, 0.05).andThen(new ArmPIDCommand(armSubsystem, 17.5)));
                 
                 
                

@@ -68,7 +68,7 @@ public final class Constants {
 
   public static class TelescopeConstants {
     public static final int EXTENSION_TALON_ID = 15;
-    public static final double kTelescopeSpeed = 0.4;
+    public static final double kTelescopeSpeed = 0.8;
   }
 
   public static class ArmConstants {

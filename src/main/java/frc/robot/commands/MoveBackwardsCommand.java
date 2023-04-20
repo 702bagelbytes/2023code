@@ -13,11 +13,11 @@ public class MoveBackwardsCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driveSubsystem.tankDrive(-0.715, -0.75);
+        driveSubsystem.arcadeDrive(-.73, 0);
     }
 
     public void end() {
-        driveSubsystem.tankDrive(0, 0);
+        driveSubsystem.arcadeDrive(0, 0);
     }
 
 }

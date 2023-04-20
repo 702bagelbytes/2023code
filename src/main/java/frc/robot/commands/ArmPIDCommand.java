@@ -7,7 +7,7 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmPIDCommand extends CommandBase {
   ArmSubsystem armSubsystem;
-  private PIDController armPIDController = new PIDController(0.08, 0, 0.01);
+  private PIDController armPIDController = new PIDController(0.01, 0, 0.01);
 
   public ArmPIDCommand(ArmSubsystem armSubsystem, double setpoint) {
     this.armSubsystem = armSubsystem;

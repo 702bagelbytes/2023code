@@ -6,7 +6,7 @@ import frc.robot.subsystems.TelescopeSubsystem;
 
 public class TelescopePIDCommand extends CommandBase {
     TelescopeSubsystem telescopeSubsystem;
-    PIDController telescopePIDController = new PIDController(0.1, 0, .005);//used to be one but they changed the gearbox so test it
+    PIDController telescopePIDController = new PIDController(3, 0, .005);//used to be one but they changed the gearbox so test it
 
     public TelescopePIDCommand(TelescopeSubsystem telescopeSubsystem, double setpoint) {
         this.telescopeSubsystem = telescopeSubsystem;
