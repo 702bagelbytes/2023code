@@ -7,10 +7,15 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
+//feedforward
+
+//import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+
+
+//if u want to current limit check this line out
+
+//import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonFX armTalonFX = new WPI_TalonFX(Constants.ArmConstants.ARM_TALON_ID);
@@ -21,7 +26,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     //use a binary search
     
-    private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0);
+    //private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0);
 
     //figure out good values so arm doesn't draw too much power
    // SupplyCurrentLimitConfiguration config = new SupplyCurrentLimitConfiguration(false, 0, 0, 0);
