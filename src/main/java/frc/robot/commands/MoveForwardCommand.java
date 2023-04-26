@@ -14,11 +14,12 @@ public class MoveForwardCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driveSubsystem.tankDrive(0.75, 0.75);
+        driveSubsystem.arcadeDrive(1, 0); // 0.735, 0.75
     }
 
     public void end() {
-        driveSubsystem.tankDrive(0, 0);
+        driveSubsystem.arcadeDrive(0, 0);
+        
     }
 
 }

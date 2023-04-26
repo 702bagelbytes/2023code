@@ -27,6 +27,9 @@ public final class Constants {
   }
 
   public static class DriveConstants {
+
+    //if motor controllers go changey changey, these should go changey changey or robot no go correct  
+
     public static final int SPARK_FL_ID = 1;
     public static final int TALON_ML_ID = 36;
     public static final int TALON_BL_ID = 35;
@@ -37,8 +40,9 @@ public final class Constants {
     public static final boolean LEFT_ENCODER_INVERTED = true;
     public static final boolean RIGHT_ENCODER_INVERTED = true;
     public static final double ENCODER_OFFSET = 130;
-    public static final double DRIVE_SPEED = 0.75;
     public static final double WHEEL_RADIUS_INCH = 4.0;
+
+    //there's probably a method that could do this without us having to make one(not that it matters very much)
     public static final double INCH_TO_METER = 0.0254;
 
     public static class MotorFeed {
@@ -68,12 +72,13 @@ public final class Constants {
 
   public static class TelescopeConstants {
     public static final int EXTENSION_TALON_ID = 15;
-    public static final double kTelescopeSpeed = 0.4;
+    public static final double kTelescopeSpeed = 1.0;
   }
 
   public static class ArmConstants {
     public static final int ARM_TALON_ID = 10;
 
+    //dang the arm is pretty powerful (if only we had been subbed in at LA regional 2023 to flip 687 back up and win 2-0 in the finals)
     public static final double kMaxArmOutput = 0.4;
     public static final double MAX_UP_DEG = 21;
     public static final boolean REVERSE_LIMIT_TOGGLE = false;
@@ -82,6 +87,7 @@ public final class Constants {
 
   public static class EncoderConstants {
     // 1 / cpr / gear ratio
+    //I hate gear ratios, consult Antoine so he can teach u (don't bother me with this)
     public static double BASE = 1;
     public static double PULSES_PER_REVOLUTION = 2048;
     public static double GEARBOX_RATIO = 48;
@@ -94,6 +100,8 @@ public final class Constants {
   }
 
   public static class GRABOTRONConstants {
+    //Don't ever make anything the same ID or else it will screw up ur robot and convince u that it is an electronics issue
+    //when it was actually a programming issue the entire time :/
     public static final int kRevPneumaticsHubId = 5;
     public static final int kExtendSolenoid = 0;
     public static final int kRetractSolenoid = 1;

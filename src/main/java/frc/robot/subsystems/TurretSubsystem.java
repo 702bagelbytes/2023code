@@ -14,6 +14,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
+
+    //I honestly don't know what I was doing but it ended up working so yeah...
+
     private final WPI_TalonFX talon = new WPI_TalonFX(Constants.TurretConstants.TURRET_ID);
     SlewRateLimiter rateLimiter = new SlewRateLimiter(0.5, -0.5, 0.0);
     LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
@@ -44,7 +47,7 @@ public class TurretSubsystem extends SubsystemBase {
     public Command runCmd(DoubleSupplier input) {
 
         Runnable onTick = () -> {
-            double speed = filter.calculate(input.getAsDouble() / 6);
+            double speed = filter.calculate(input.getAsDouble() / 4);
 
             this.set(speed);
         };

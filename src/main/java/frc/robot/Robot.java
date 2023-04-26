@@ -4,15 +4,15 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.CvSource;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoMode.PixelFormat;
+//Uncomment for camera usage
+
+// import edu.wpi.first.cameraserver.CameraServer;
+// import edu.wpi.first.cscore.CvSink;
+// import edu.wpi.first.cscore.CvSource;
+// import edu.wpi.first.cscore.UsbCamera;
+// import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,17 +34,11 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   protected enum AutonomousChoices {
-    ArmScore("Arm Auto (beta)"),
     Balance("Balance (beta)"),
     Default("Default Command"),
-    PathTest("Paths (beta)"),
-    PathTestBackwards("Path backwwards (beta)"),
-    ScoreLowAndBackOut("Score Low and Back out"),
-    ScoreMidAndBackOut("Score Mid and Back out (beta)"),
-    ScoreHigh("Score High"),
+    BumpAlone("bump Alone"),
     BumpBackOut("bump piece and Back out"),
     TwoPieceAuto("Two Piece Auto (beta)"),
-    ScoreHighTwice("Score High Twice (beta)"),
     BumpScoreSecondPiece("Bump and Score second piece (beta) ");
 
     String label;
@@ -73,9 +67,11 @@ public class Robot extends TimedRobot {
       chooser.addOption(auto.label, auto);
     }
 
-    // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
+    //if u want to try to get camera working without it killing the pc, use this code and prob figure out a way to use a different
+    //software like glass that is more optimized than shitfleboard
+
+    //oops typo my bad cursing is bad
+
     // UsbCamera camera = CameraServer.startAutomaticCapture();
     // camera.setResolution(320, 240);
     // camera.setFPS(15);
@@ -128,7 +124,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand(chooser.getSelected());
-    m_robotContainer.setArmBrakeMode(NeutralMode.Brake);
     m_robotContainer.resetGyro();
     m_robotContainer.resetDriveEncoders();
     // schedule the autonomous command (example)
@@ -151,7 +146,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.setArmBrakeMode(NeutralMode.Coast);
+    m_robotContainer.setArmBrakeMode(NeutralMode.Brake);
   }
 
   /** This function is called periodically during operator control. */

@@ -17,7 +17,7 @@ public class BalanceCommand extends CommandBase {
             Supplier<Float> balanceAngleSupplier, double setpoint) {
         this.driveSubsystem = driveSubsystem;
         this.balanceAngleSupplier = balanceAngleSupplier;
-        controller.setTolerance(2);
+        controller.setTolerance(1);
         controller.setSetpoint(setpoint);
         addRequirements(driveSubsystem);
     }
@@ -27,12 +27,11 @@ public class BalanceCommand extends CommandBase {
 
         double leftSpeed = controller.calculate(balanceAngleSupplier.get());
         double rightSpeed = controller.calculate(balanceAngleSupplier.get());
-        leftSpeed = MathUtil.clamp(leftSpeed, -0.75, 0.75);
-        rightSpeed = MathUtil.clamp(rightSpeed, -0.75, 0.75);
-        SmartDashboard.putData(controller);
+        leftSpeed = MathUtil.clamp(leftSpeed, 0.05, 0.64);
+        rightSpeed = MathUtil.clamp(rightSpeed, 0.05, 0.72);
         SmartDashboard.putNumber("L_AutoSpeed", leftSpeed);
         SmartDashboard.putNumber("R_AutoSpeed", rightSpeed);
-        driveSubsystem.tankDrive(leftSpeed, rightSpeed);
+        driveSubsystem.tankDrive(-leftSpeed, -rightSpeed);
     }
 
     @Override
