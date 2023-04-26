@@ -18,7 +18,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -43,9 +42,6 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX talonML = new WPI_TalonSRX(DriveConstants.TALON_ML_ID);
     private final WPI_TalonSRX talonBL = new WPI_TalonSRX(DriveConstants.TALON_BL_ID);
     private final MotorControllerGroup leftGroup = new MotorControllerGroup(sparkFL, talonML, talonBL);
-    // private final AHRSSubsystem ahrsSubsystem = new AHRSSubsystem();
-    private final SlewRateLimiter leftLimiter = new SlewRateLimiter(4);
-    private final SlewRateLimiter rightLimiter = new SlewRateLimiter(4);
     DifferentialDriveOdometry m_odometry;
     private final Supplier<Rotation2d> getRotation2d;
 
@@ -61,9 +57,10 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
 
     public DriveSubsystem(Supplier<Rotation2d> getRotation2d) {
+        //this is probably wrong I would scrap and redo for swerve 100%
         this.getRotation2d = getRotation2d;
         this.m_odometry = new DifferentialDriveOdometry(
-                getRotation2d.get(), this.getLeftDistance(), this.getRightDistance());
+                getRotation2d.get(), this.getLeftDistance(), this.getRightDistance(), pose);
 
         sparkFL.setInverted(true);
         sparkFR.setInverted(true);
@@ -77,6 +74,9 @@ public class DriveSubsystem extends SubsystemBase {
         talonMR.setNeutralMode(NeutralMode.Brake);
         talonBR.setNeutralMode(NeutralMode.Brake);
 
+        //set current limits that the tech guy at LA Regional 2023 told me to do, maybe ask Reza 
+        //if current limiting the arm or telescoping would be worth it
+
         sparkFL.setSmartCurrentLimit(30);
         sparkFR.setSmartCurrentLimit(30);
         talonML.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 40, 0.1));
@@ -88,7 +88,10 @@ public class DriveSubsystem extends SubsystemBase {
 
         resetEncoders();
 
-        drive.setMaxOutput(DriveConstants.DRIVE_SPEED);
+        //haha so yeah Soleil, when I said we were at full drive speed, this next comment wasn't commented out
+        //, which means that we were definitely not at full speed xD lol :) :((((
+
+        //drive.setMaxOutput(DriveConstants.DRIVE_SPEED);
     }
 
     public double getRightDistance() {
@@ -120,7 +123,20 @@ public class DriveSubsystem extends SubsystemBase {
         return Math.copySign(minSpeed, speed) + (1 - minSpeed) * speed;
     }
 
-    public void tankDrive(double leftSpeed, double rightSpeed) {
+    public void arcadeDrive(double speed, double rotation) {
+        speed = clampSpeed(speed);
+        SmartDashboard.putNumber("Speed", speed);
+        drive.arcadeDrive(speed, rotation, true);
+
+    }
+
+    public Command arcadeDriveCmd(Supplier<Double> speedSupplier, Supplier<Double> rotationSupplier) {
+        return this.runEnd(
+                () -> arcadeDrive(clampSpeed(speedSupplier.get()), rotationSupplier.get() *.85),
+                () -> drive.arcadeDrive(0, 0));
+    }
+
+     public void tankDrive(double leftSpeed, double rightSpeed) {
         // leftSpeed = leftLimiter.calculate(clampSpeed(leftSpeed));
         leftSpeed = clampSpeed(leftSpeed);
         // rightSpeed = rightLimiter.calculate(clampSpeed(rightSpeed));
@@ -138,6 +154,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
+        //return pose;  is this correct?
     }
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -186,11 +203,14 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void resetOdometry(Pose2d initialPose) {
-
+        m_odometry.resetPosition(getRotation2d.get(), this.getLeftDistance(), this.getRightDistance(), initialPose);
     }
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Left Velocity", leftEncoder.getVelocity());
+        SmartDashboard.putNumber("Right Velocity", rightEncoder.getVelocity());
+        
         SmartDashboard.putString("Drive Encoders",
                 String.format("L: %.2f, R: %.2f", leftEncoder.getPosition(), rightEncoder.getPosition()));
         var gyroAngle = getRotation2d.get();

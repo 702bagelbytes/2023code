@@ -7,19 +7,34 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonFX armTalonFX = new WPI_TalonFX(Constants.ArmConstants.ARM_TALON_ID);
-    private final PIDController armPIDController = new PIDController(0.08, 0, 0.01);
-    private double setpoint;
+
+    //if u figure this out then u don't need break mode which is good for conserving battery life.
+    //slowly increase values from like 0.00001 to whatever 10 times it is 
+    //and once it starts to move then u gradually increase until it is perfect.
+
+    //use a binary search
+    
+    private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0);
+
+    //figure out good values so arm doesn't draw too much power
+   // SupplyCurrentLimitConfiguration config = new SupplyCurrentLimitConfiguration(false, 0, 0, 0);
+    
 
     public ArmSubsystem() {
+        //armTalonFX.configSupplyCurrentLimit()
+
         armTalonFX.configForwardSoftLimitThreshold(Constants.ArmConstants.MAX_UP_DEG);
         armTalonFX.configForwardSoftLimitEnable(Constants.ArmConstants.FORWARD_LIMIT_TOGGLE);
         armTalonFX.setNeutralMode(NeutralMode.Brake);
-        armPIDController.setTolerance(4);
+
+        
 
     }
 
@@ -67,39 +82,19 @@ public class ArmSubsystem extends SubsystemBase {
                 * Constants.EncoderConstants.BASE;
     }
 
-    public PIDController getArmPID() {
-        return armPIDController;
-    }
-
-    public void set() {
-        double calculated = armPIDController.calculate(getEncoderPositionDeg(), setpoint)
-                * Constants.ArmConstants.kMaxArmOutput;
-        armTalonFX.set(calculated);
-
-    }
-
-    public void setOld(double val) {
-        double speed = val * Constants.ArmConstants.kMaxArmOutput;
-        armTalonFX.set(speed);
+    public void set(double val) {
+        
+        armTalonFX.set(val * 0.4); //+ armFeedforward.calculate(Math.toRadians(getEncoderPositionDeg()), 0)* Constants.ArmConstants.kMaxArmOutput); // + Math.cos(Math.toRadians(getEncoderPositionDeg()) * 0.0001));
 
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm Angle", this.getEncoderPositionDeg());
-        // if (setpoint <= -73) {
-        // setpoint = -73;
-        // }
-
-        // else if (setpoint >= 20) {
-        // setpoint = 20;
-        // }
-        // this.set();
     }
 
     public Command moveCmd(DoubleSupplier input) {
-        return // this.run(() -> setpoint += (input.getAsDouble() / 2));
-        this.runEnd(() -> this.setOld(input.getAsDouble()), () -> this.setOld(0));
+        return this.runEnd(() -> this.set(input.getAsDouble()), () -> this.set(0));
 
     }
 }

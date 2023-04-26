@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -14,11 +13,11 @@ public class MoveBackwardsCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driveSubsystem.tankDrive(-0.725, -0.75);
+        driveSubsystem.tankDrive(-.68, -.73);//-.72, -.73
     }
 
     public void end() {
-        driveSubsystem.tankDrive(0, 0);
+        driveSubsystem.arcadeDrive(0, 0);
     }
 
 }

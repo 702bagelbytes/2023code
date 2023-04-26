@@ -16,9 +16,11 @@ public class GRABOTRONSubsystem extends SubsystemBase {
             PneumaticsModuleType.REVPH, GRABOTRONConstants.kExtendSolenoid, GRABOTRONConstants.kRetractSolenoid);
 
     public GRABOTRONSubsystem() {
+        // phCompressor.disable();
         phCompressor.enableDigital();
         grabSolenoid.set(Value.kReverse);
-        SmartDashboard.putString("Pressure", String.format("%.2f", phCompressor.getPressure()));
+        SmartDashboard.putString("Pressure", String.format("%.2f",
+                phCompressor.getPressure()));
     }
 
     public DoubleSolenoid getSolenoid() {
